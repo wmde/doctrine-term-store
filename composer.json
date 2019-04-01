@@ -3,7 +3,8 @@
 	"license": "BSD-3-Clause",
 	"description": "Small library for looking up terms by item or property id or findings ids by term",
 	"require": {
-		"php": ">=7.0"
+		"php": ">=7.0",
+		"wikibase/data-model": "~9.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^6.5.14",

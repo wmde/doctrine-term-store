@@ -5,15 +5,15 @@ declare( strict_types = 1 );
 namespace Wikibase\TermStore\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Wikibase\TermStore\ProductionClass;
+use Wikibase\TermStore\PropertyTermStore;
 
 /**
- * @covers \Wikibase\TermStore\ProductionClass
+ * @covers \Wikibase\TermStore\PropertyTermStore
  */
 class ProductionClassTest extends TestCase {
 
 	public function testGetTrue() {
-		$this->assertTrue( ProductionClass::getTrue() );
+		$this->assertTrue( true );
 	}
 
 }
