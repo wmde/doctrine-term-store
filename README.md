@@ -1,8 +1,8 @@
-# PHP Library Template
+# Wikibase TermStore
 
-[![Build Status](https://travis-ci.org/JeroenDeDauw/new-php-library.svg?branch=master)](https://travis-ci.org/JeroenDeDauw/new-php-library)
+[![Build Status](https://travis-ci.org/wmde/wikibase-term-store.svg?branch=master)](https://travis-ci.org/wmde/wikibase-term-store)
 
-This is a template for starting new PHP libraries. Copy or fork to get started quickly.
+Small library for looking up terms by item or property id or findings ids by term.
 
 ## Usage
 
@@ -10,14 +10,14 @@ TODO
 
 ## Installation
 
-To use the UPDATE_NAME library in your project, simply add a dependency on UPDATE/NAME
+To use the UPDATE_NAME library in your project, simply add a dependency on wmde/wikibase-term-store
 to your project's `composer.json` file. Here is a minimal example of a `composer.json`
-file that just defines a dependency on UPDATE_NAME 1.x:
+file that just defines a dependency on wmde/wikibase-term-store 1.x:
 
 ```json
 {
     "require": {
-        "UPDATE/NAME": "~1.0"
+        "wmde/wikibase-term-store": "~1.0"
     }
 }
 ```

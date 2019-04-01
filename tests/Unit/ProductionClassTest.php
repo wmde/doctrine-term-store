@@ -2,13 +2,13 @@
 
 declare( strict_types = 1 );
 
-namespace Such\NewProject\Tests\Unit;
+namespace Wikibase\TermStore\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Such\NewProject\ProductionClass;
+use Wikibase\TermStore\ProductionClass;
 
 /**
- * @covers \Such\NewProject\ProductionClass
+ * @covers \Wikibase\TermStore\ProductionClass
  */
 class ProductionClassTest extends TestCase {
 

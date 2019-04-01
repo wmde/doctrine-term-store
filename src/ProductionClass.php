@@ -2,7 +2,7 @@
 
 declare( strict_types = 1 );
 
-namespace Such\NewProject;
+namespace Wikibase\TermStore;
 
 class ProductionClass {
 
