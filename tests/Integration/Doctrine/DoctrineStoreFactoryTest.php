@@ -6,7 +6,6 @@ namespace Wikibase\TermStore\Tests\Integration\Doctrine;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\TestCase;
 use Wikibase\TermStore\DoctrineStoreFactory;

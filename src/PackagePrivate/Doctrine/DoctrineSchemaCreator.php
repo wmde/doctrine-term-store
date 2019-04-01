@@ -23,7 +23,6 @@ class DoctrineSchemaCreator {
 		$this->schemaManager->createTable( $this->newTextInLangTable() );
 		$this->schemaManager->createTable( $this->newTextTable() );
 		$this->schemaManager->createTable( $this->newTypeTable() );
-
 	}
 
 	private function newItemTermsTable(): Table {
