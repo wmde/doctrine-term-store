@@ -19,6 +19,6 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
-
+		return new Fingerprint();
 	}
 }
