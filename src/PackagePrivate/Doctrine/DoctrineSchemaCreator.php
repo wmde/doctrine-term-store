@@ -47,6 +47,10 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'property_id', Type::INTEGER, [ 'unsigned' => true ] );
 		$table->addColumn( 'term_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
 
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addIndex( [ 'property_id' ], 'wbt_property_terms_property_id' );
+		$table->addIndex( [ 'term_in_lang_id' ], 'wbt_property_terms_term_in_lang_id' );
+
 		return $table;
 	}
 
@@ -56,6 +60,10 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'type_id', Type::INTEGER, [ 'unsigned' => true ] );
 		$table->addColumn( 'text_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
+
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addIndex( [ 'type_id' ], 'wbt_term_in_lang_type_id' );
+		$table->addIndex( [ 'text_in_lang_id' ], 'wbt_term_in_lang_text_in_lang_id' );
 
 		return $table;
 	}
@@ -67,6 +75,10 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'language', Type::BINARY, [ 'length' => 10 ] );
 		$table->addColumn( 'text_id', Type::INTEGER, [ 'unsigned' => true ] );
 
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addIndex( [ 'language' ], 'wbt_text_in_lang_language' );
+		$table->addIndex( [ 'text_id' ], 'wbt_text_in_lang_text_id' );
+
 		return $table;
 	}
 
@@ -76,6 +88,9 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'text', Type::BINARY, [ 'length' => 255 ] );
 
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addUniqueIndex( [ 'text' ], 'wbt_text_text' );
+
 		return $table;
 	}
 
@@ -84,6 +99,9 @@ class DoctrineSchemaCreator {
 
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'name', Type::BINARY, [ 'length' => 45 ] );
+
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addUniqueIndex( [ 'name' ], 'wbt_type_name' );
 
 		return $table;
 	}
