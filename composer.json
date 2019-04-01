@@ -4,7 +4,8 @@
 	"description": "Small library for looking up terms by item or property id or findings ids by term",
 	"require": {
 		"php": ">=7.0",
-		"wikibase/data-model": "~9.1"
+		"wikibase/data-model": "~9.1",
+		"doctrine/dbal": "^2.5.13"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^6.5.14",
