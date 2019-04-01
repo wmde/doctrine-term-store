@@ -5,7 +5,7 @@
 	"require": {
 		"php": ">=7.0",
 		"wikibase/data-model": "~9.1",
-		"doctrine/dbal": "^2.5.13"
+		"doctrine/dbal": "~2.5.13"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^6.5.14",

@@ -33,6 +33,10 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'item_id', Type::INTEGER, [ 'unsigned' => true ] );
 		$table->addColumn( 'term_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
 
+		$table->setPrimaryKey( [ 'id' ] );
+		$table->addIndex( [ 'item_id' ], 'wbt_item_terms_item_id' );
+		$table->addIndex( [ 'term_in_lang_id' ], 'wbt_item_terms_term_in_lang_id' );
+
 		return $table;
 	}
 
