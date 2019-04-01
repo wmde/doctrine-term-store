@@ -4,13 +4,13 @@ declare( strict_types = 1 );
 
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
-use Wikibase\DataModel\Entity\Property;
 use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\TermStore\PropertyTermStore;
 
 class DoctrinePropertyTermStore implements PropertyTermStore {
 
-	public function storeTerms( Property $property ) {
+	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
 
 	}
 
@@ -18,4 +18,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	}
 
+	public function getTerms( PropertyId $propertyId ): Fingerprint {
+
+	}
 }
