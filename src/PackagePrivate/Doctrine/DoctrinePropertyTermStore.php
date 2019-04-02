@@ -5,11 +5,13 @@ declare( strict_types = 1 );
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Statement;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\TermStore\PropertyTermStore;
+use Wikibase\TermStore\TermStoreException;
 
 class DoctrinePropertyTermStore implements PropertyTermStore {
 
@@ -164,9 +166,14 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
-		return $this->recordsToFingerprint(
-			$this->newGetTermsStatement( $propertyId )->fetchAll( \PDO::FETCH_OBJ )
-		);
+		try {
+			return $this->recordsToFingerprint(
+				$this->newGetTermsStatement( $propertyId )->fetchAll( \PDO::FETCH_OBJ )
+			);
+		}
+		catch ( DBALException $ex ) {
+			throw new TermStoreException( $ex->getMessage(), $ex->getCode() );
+		}
 	}
 
 	private function newGetTermsStatement( PropertyId $propertyId ): Statement {

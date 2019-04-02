@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 namespace Wikibase\TermStore\Tests\Integration\Doctrine;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\PropertyId;
@@ -16,6 +17,7 @@ use Wikibase\DataModel\Term\TermList;
 use Wikibase\TermStore\DoctrineStoreFactory;
 use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
 use Wikibase\TermStore\PropertyTermStore;
+use Wikibase\TermStore\TermStoreException;
 
 /**
  * @covers \Wikibase\TermStore\PackagePrivate\Doctrine\DoctrinePropertyTermStore
@@ -239,6 +241,26 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			$newFingerprint,
 			$this->store->getTerms( $propertyId )
 		);
+	}
+
+	public function testGetTermsThrowsExceptionOnInfrastructureFailure() {
+		$store = $this->newStoreWithThrowingConnection();
+
+		$this->expectException( TermStoreException::class );
+		$store->getTerms( new PropertyId( 'P1' ) );
+	}
+
+	private function newStoreWithThrowingConnection(): PropertyTermStore {
+		return ( new DoctrineStoreFactory( $this->newThrowingDoctrineConnection() ) )->newPropertyTermStore();
+	}
+
+	private function newThrowingDoctrineConnection(): Connection {
+		$connection = $this->createMock( Connection::class );
+
+		$connection->method( $this->anything() )
+			->willThrowException( new DBALException() );
+
+		return $connection;
 	}
 
 	// TODO: deletion cleanup
