@@ -71,11 +71,11 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testLabelRoundtrip() {
+	/**
+	 * @dataProvider fingerprintProvider
+	 */
+	public function testFingerprintRoundtrip( Fingerprint $fingerprint ) {
 		$propertyId = new PropertyId( 'P1' );
-		$fingerprint = new Fingerprint(
-			new TermList( [ new Term( 'en', 'EnglishLabel' ) ] )
-		);
 
 		$this->store->storeTerms( $propertyId, $fingerprint );
 
@@ -85,63 +85,47 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testDescriptionRoundtrip() {
-		$propertyId = new PropertyId( 'P1' );
-		$fingerprint = new Fingerprint(
-			null,
-			new TermList( [ new Term( 'de', 'ZeGermanDescription' ) ] )
-		);
+	public function fingerprintProvider() {
+		yield 'one label' => [
+			new Fingerprint(
+				new TermList( [ new Term( 'en', 'EnglishLabel' ) ] )
+			)
+		];
 
-		$this->store->storeTerms( $propertyId, $fingerprint );
+		yield 'one description' => [
+			new Fingerprint(
+				null,
+				new TermList( [ new Term( 'de', 'ZeGermanDescription' ) ] )
+			)
+		];
 
-		$this->assertEquals(
-			$fingerprint,
-			$this->store->getTerms( $propertyId )
-		);
-	}
+		yield 'one alias' => [
+			new Fingerprint(
+				null,
+				null,
+				new AliasGroupList( [
+					new AliasGroup( 'fr', [ 'LeFrenchAlias' ] )
+				] )
+			)
+		];
 
-	public function testAliasesRoundtrip() {
-		$propertyId = new PropertyId( 'P1' );
-		$fingerprint = new Fingerprint(
-			null,
-			null,
-			new AliasGroupList( [
-				new AliasGroup( 'fr', [ 'LeFrenchAlias' ] )
-			] )
-		);
-
-		$this->store->storeTerms( $propertyId, $fingerprint );
-
-		$this->assertEquals(
-			$fingerprint,
-			$this->store->getTerms( $propertyId )
-		);
-	}
-
-	public function testMultipleTermsRoundtrip() {
-		$propertyId = new PropertyId( 'P1' );
-		$fingerprint = new Fingerprint(
-			new TermList( [
-				new Term( 'en', 'EnglishLabel' ),
-				new Term( 'de', 'ZeGermanLabel' ),
-				new Term( 'fr', 'LeFrenchLabel' ),
-			] ),
-			new TermList( [
-				new Term( 'en', 'EnglishDescription' ),
-				new Term( 'de', 'ZeGermanDescription' ),
-			] ),
-			new AliasGroupList( [
-				new AliasGroup( 'fr', [ 'LeFrenchAlias', 'LaFrenchAlias' ] ),
-				new AliasGroup( 'en', [ 'EnglishAlias' ] ),
-			] )
-		);
-
-		$this->store->storeTerms( $propertyId, $fingerprint );
-
-		$this->assertEquals(
-			$fingerprint,
-			$this->store->getTerms( $propertyId )
-		);
+		yield 'multiple terms' => [
+			new Fingerprint(
+				new TermList( [
+					new Term( 'en', 'EnglishLabel' ),
+					new Term( 'de', 'ZeGermanLabel' ),
+					new Term( 'fr', 'LeFrenchLabel' ),
+				] ),
+				new TermList( [
+					new Term( 'en', 'EnglishDescription' ),
+					new Term( 'de', 'ZeGermanDescription' ),
+				] ),
+				new AliasGroupList( [
+					new AliasGroup( 'fr', [ 'LeFrenchAlias', 'LaFrenchAlias' ] ),
+					new AliasGroup( 'en', [ 'EnglishAlias' ] ),
+				] )
+			)
+		];
 	}
 
 	public function testOnlyTermsOfThePropertyAreReturned() {
