@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
@@ -85,7 +86,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 		);
 	}
 
-	private function newGetTermsStatement( PropertyId $propertyId ) {
+	private function newGetTermsStatement( PropertyId $propertyId ): Statement {
 		$sql = <<<EOT
 SELECT text, language, type_id FROM wbt_property_terms
 INNER JOIN wbt_term_in_lang ON wbt_property_terms.term_in_lang_id = wbt_term_in_lang.id
@@ -98,11 +99,14 @@ EOT;
 			$sql,
 			[
 				$propertyId->getNumericId()
+			],
+			[
+				\PDO::PARAM_INT
 			]
 		);
 	}
 
-	private function recordsToFingerprint( $termRecords ) {
+	private function recordsToFingerprint( array $termRecords ): Fingerprint {
 		$fingerprint = new Fingerprint();
 
 		$aliasGroups = [];
