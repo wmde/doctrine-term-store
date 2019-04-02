@@ -37,7 +37,6 @@ class DoctrineStoreFactoryTest extends TestCase {
 		$this->assertTableExists( Tables::TERM_IN_LANGUAGE );
 		$this->assertTableExists( Tables::TEXT_IN_LANGUAGE );
 		$this->assertTableExists( Tables::TEXT );
-//		$this->assertTableExists( 'wbt_type' );
 	}
 
 	private function newStoreFactory(): DoctrineStoreFactory {

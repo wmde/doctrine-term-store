@@ -22,7 +22,6 @@ class DoctrineSchemaCreator {
 		$this->schemaManager->createTable( $this->newTermInLangTable() );
 		$this->schemaManager->createTable( $this->newTextInLangTable() );
 		$this->schemaManager->createTable( $this->newTextTable() );
-		//$this->schemaManager->createTable( $this->newTypeTable() );
 	}
 
 	private function newItemTermsTable(): Table {
@@ -92,17 +91,5 @@ class DoctrineSchemaCreator {
 
 		return $table;
 	}
-
-//	private function newTypeTable(): Table {
-//		$table = new Table( 'wbt_type' );
-//
-//		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
-//		$table->addColumn( 'name', Type::BINARY, [ 'length' => 45 ] );
-//
-//		$table->setPrimaryKey( [ 'id' ] );
-//		$table->addUniqueIndex( [ 'name' ], 'wbt_type_name' );
-//
-//		return $table;
-//	}
 
 }
