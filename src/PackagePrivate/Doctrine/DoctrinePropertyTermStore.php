@@ -56,16 +56,28 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	private function acquireTermInLanguageId( Term $term, $termType ) {
 		$textInLanguageId = $this->acquireTextInLanguageId( $term );
 
+		$id = $this->findExistingTermInLanguageId( $termType, $textInLanguageId );
+
+		if ( $id !== false ) {
+			return $id;
+		}
+
+		$this->insertTermInLanguageRecord( $termType, $textInLanguageId );
+
+		return $this->connection->lastInsertId();
+	}
+
+	private function findExistingTermInLanguageId( $termType, $textInLanguageId ) {
 		$record = $this->connection->executeQuery(
 			'SELECT id FROM wbt_term_in_lang WHERE type_id = ? AND text_in_lang_id = ?',
 			[ $termType, $textInLanguageId ],
 			[ \PDO::PARAM_INT, \PDO::PARAM_INT ]
 		)->fetch();
 
-		if ( is_array( $record ) ) {
-			return $record['id'];
-		}
+		return is_array( $record ) ? $record['id'] : false;
+	}
 
+	private function insertTermInLanguageRecord( $termType, $textInLanguageId ) {
 		$this->connection->insert(
 			Tables::TERM_IN_LANGUAGE,
 			[
@@ -73,23 +85,33 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 				'text_in_lang_id ' => $textInLanguageId,
 			]
 		);
-
-		return $this->connection->lastInsertId();
 	}
 
 	private function acquireTextInLanguageId( Term $term ) {
 		$textId = $this->acquireTextId( $term );
 
+		$id = $this->findExistingTextInLanguageId( $term, $textId );
+
+		if ( $id !== false ) {
+			return $id;
+		}
+
+		$this->insertTextInLanguageRecord( $term, $textId );
+
+		return $this->connection->lastInsertId();
+	}
+
+	private function findExistingTextInLanguageId( Term $term, $textId ) {
 		$record = $this->connection->executeQuery(
 			'SELECT id FROM wbt_text_in_lang WHERE language = ? AND text_id = ?',
 			[ $term->getLanguageCode(), $textId ],
 			[ \PDO::PARAM_STR, \PDO::PARAM_INT ]
 		)->fetch();
 
-		if ( is_array( $record ) ) {
-			return $record['id'];
-		}
+		return is_array( $record ) ? $record['id'] : false;
+	}
 
+	private function insertTextInLanguageRecord( Term $term, $textId ) {
 		$this->connection->insert(
 			Tables::TEXT_IN_LANGUAGE,
 			[
@@ -97,29 +119,37 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 				'text_id' => $textId,
 			]
 		);
+	}
+
+	private function acquireTextId( Term $term ) {
+		$id = $this->findExistingTextId( $term );
+
+		if ( $id !== false ) {
+			return $id;
+		}
+
+		$this->insertTextRecord( $term );
 
 		return $this->connection->lastInsertId();
 	}
 
-	private function acquireTextId( Term $term ) {
+	private function findExistingTextId( Term $term ) {
 		$record = $this->connection->executeQuery(
 			'SELECT id FROM wbt_text WHERE text = ?',
 			[ $term->getText() ],
 			[ \PDO::PARAM_STR ]
 		)->fetch();
 
-		if ( is_array( $record ) ) {
-			return $record['id'];
-		}
+		return is_array( $record ) ? $record['id'] : false;
+	}
 
+	private function insertTextRecord( Term $term ) {
 		$this->connection->insert(
 			Tables::TEXT,
 			[
 				'text' => $term->getText(),
 			]
 		);
-
-		return $this->connection->lastInsertId();
 	}
 
 	public function deleteTerms( PropertyId $propertyId ) {
