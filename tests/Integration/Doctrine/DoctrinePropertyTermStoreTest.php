@@ -110,22 +110,26 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		];
 
 		yield 'multiple terms' => [
-			new Fingerprint(
-				new TermList( [
-					new Term( 'en', 'EnglishLabel' ),
-					new Term( 'de', 'ZeGermanLabel' ),
-					new Term( 'fr', 'LeFrenchLabel' ),
-				] ),
-				new TermList( [
-					new Term( 'en', 'EnglishDescription' ),
-					new Term( 'de', 'ZeGermanDescription' ),
-				] ),
-				new AliasGroupList( [
-					new AliasGroup( 'fr', [ 'LeFrenchAlias', 'LaFrenchAlias' ] ),
-					new AliasGroup( 'en', [ 'EnglishAlias' ] ),
-				] )
-			)
+			$this->newFingerprintWithManyTerms()
 		];
+	}
+
+	private function newFingerprintWithManyTerms(): Fingerprint {
+		return new Fingerprint(
+			new TermList( [
+				new Term( 'en', 'EnglishLabel' ),
+				new Term( 'de', 'ZeGermanLabel' ),
+				new Term( 'fr', 'LeFrenchLabel' ),
+			] ),
+			new TermList( [
+				new Term( 'en', 'EnglishDescription' ),
+				new Term( 'de', 'ZeGermanDescription' ),
+			] ),
+			new AliasGroupList( [
+				new AliasGroup( 'fr', [ 'LeFrenchAlias', 'LaFrenchAlias' ] ),
+				new AliasGroup( 'en', [ 'EnglishAlias' ] ),
+			] )
+		);
 	}
 
 	public function testOnlyTermsOfThePropertyAreReturned() {
@@ -168,9 +172,40 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testDeletionRemovesReturnsOfTarget() {
+		$propertyId = new PropertyId( 'P1' );
+
+		$this->store->storeTerms(
+			$propertyId,
+			$this->newFingerprintWithManyTerms()
+		);
+
+		$this->store->deleteTerms( $propertyId );
+
+		$this->assertEquals(
+			new Fingerprint(),
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
+	public function testDeletionOnlyRemovesTargetTerms() {
+		$propertyId = new PropertyId( 'P1' );
+
+		$this->store->storeTerms(
+			$propertyId,
+			$this->newFingerprintWithManyTerms()
+		);
+
+		$this->store->deleteTerms( new PropertyId( 'P2' ) );
+
+		$this->assertEquals(
+			$this->newFingerprintWithManyTerms(),
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
 	// TODO: insertion of existing elements
 	// TODO: update
-	// TODO: deletion
 	// TODO: infra failures
 
 }

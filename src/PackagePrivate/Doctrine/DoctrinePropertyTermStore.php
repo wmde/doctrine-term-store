@@ -77,7 +77,11 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function deleteTerms( PropertyId $propertyId ) {
-
+		$this->connection->delete(
+			Tables::PROPERTY_TERMS,
+			[ 'property_id' => $propertyId->getNumericId() ],
+			[ \PDO::PARAM_INT ]
+		);
 	}
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
