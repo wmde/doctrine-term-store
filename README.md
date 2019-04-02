@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/wmde/wikibase-term-store.svg?branch=master)](https://travis-ci.org/wmde/wikibase-term-store)
 
-Small library for looking up terms by item or property id or findings ids by term.
+Small library for looking up terms by item or property id or finding ids by term.
 
 ## Usage
 
