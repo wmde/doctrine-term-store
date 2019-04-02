@@ -85,7 +85,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function fingerprintProvider() {
+	public function fingerprintProvider(): \Iterator {
 		yield 'one label' => [
 			new Fingerprint(
 				new TermList( [ new Term( 'en', 'EnglishLabel' ) ] )
