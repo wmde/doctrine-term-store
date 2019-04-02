@@ -187,7 +187,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testInsertionUsesExistingRecordsOfOtherProperties() {
+	public function testStoreTermsUsesExistingRecordsOfOtherProperties() {
 		$fingerprint = new Fingerprint(
 			new TermList( [
 				new Term( 'en', 'EnglishLabel' ),
@@ -214,6 +214,33 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			'Table ' . $tableName . ' should contain ' . (string)$expectedCount . ' records'
 		);
 	}
+
+	public function testStoreTermsRemovesOldPropertyTerms() {
+		$propertyId = new PropertyId( 'P1' );
+
+		$oldFingerprint = new Fingerprint(
+			new TermList( [
+				new Term( 'en', 'EnglishLabel' ),
+				new Term( 'de', 'ZeGermanLabel' ),
+			] )
+		);
+
+		$newFingerprint = new Fingerprint(
+			new TermList( [
+				new Term( 'en', 'EnglishLabel' ),
+				new Term( 'fr', 'LeFrenchLabel' ),
+			] )
+		);
+
+		$this->store->storeTerms( $propertyId, $oldFingerprint );
+		$this->store->storeTerms( $propertyId, $newFingerprint );
+
+		$this->assertEquals(
+			$newFingerprint,
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
 
 	// TODO: insertion of existing elements
 	// TODO: update
