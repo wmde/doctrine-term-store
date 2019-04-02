@@ -45,17 +45,10 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
 		$this->connection->insert(
-			Tables::TEXT,
-			[
-				'text' => $term->getText(),
-			]
-		);
-
-		$this->connection->insert(
 			Tables::TEXT_IN_LANGUAGE,
 			[
 				'language' => $term->getLanguageCode(),
-				'text_id' => $this->connection->lastInsertId(),
+				'text_id' => $this->acquireTextId( $term ),
 			]
 		);
 
@@ -74,6 +67,27 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 				'term_in_lang_id' => $this->connection->lastInsertId(),
 			]
 		);
+	}
+
+	private function acquireTextId( Term $term ) {
+		$record = $this->connection->executeQuery(
+			'SELECT id FROM wbt_text WHERE text = ?',
+			[ $term->getText() ],
+			[ \PDO::PARAM_STR ]
+		)->fetch();
+
+		if ( is_array( $record ) ) {
+			return $record['id'];
+		}
+
+		$this->connection->insert(
+			Tables::TEXT,
+			[
+				'text' => $term->getText(),
+			]
+		);
+
+		return $this->connection->lastInsertId();
 	}
 
 	public function deleteTerms( PropertyId $propertyId ) {

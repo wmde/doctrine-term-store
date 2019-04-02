@@ -14,6 +14,7 @@ use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\DataModel\Term\TermList;
 use Wikibase\TermStore\DoctrineStoreFactory;
+use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
 use Wikibase\TermStore\PropertyTermStore;
 
 /**
@@ -204,8 +205,32 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testInsertionOfExistingTerms() {
+		$fingerprint = new Fingerprint(
+			new TermList( [
+				new Term( 'en', 'EnglishLabel' ),
+			] )
+		);
+
+		$this->store->storeTerms(
+			new PropertyId( 'P1' ),
+			$fingerprint
+		);
+
+		$this->store->storeTerms(
+			new PropertyId( 'P2' ),
+			$fingerprint
+		);
+
+		$this->assertSame(
+			'1',
+			$this->connection->executeQuery( 'SELECT count(*) as records FROM ' . Tables::TEXT )->fetchColumn()
+		);
+	}
+
 	// TODO: insertion of existing elements
 	// TODO: update
+	// TODO: deletion cleanup
 	// TODO: infra failures
 
 }
