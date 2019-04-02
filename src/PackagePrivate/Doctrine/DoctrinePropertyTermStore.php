@@ -45,20 +45,36 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
 		$this->connection->insert(
-			Tables::TERM_IN_LANGUAGE,
-			[
-				'type_id' => $termType,
-				'text_in_lang_id ' => $this->acquireTextInLanguageId( $term ),
-			]
-		);
-
-		$this->connection->insert(
 			Tables::PROPERTY_TERMS,
 			[
 				'property_id' => $propertyId->getNumericId(),
-				'term_in_lang_id' => $this->connection->lastInsertId(),
+				'term_in_lang_id' => $this->acquireTermInLanguageId( $term, $termType ),
 			]
 		);
+	}
+
+	private function acquireTermInLanguageId( Term $term, $termType ) {
+		$textInLanguageId = $this->acquireTextInLanguageId( $term );
+
+		$record = $this->connection->executeQuery(
+			'SELECT id FROM wbt_term_in_lang WHERE type_id = ? AND text_in_lang_id = ?',
+			[ $termType, $textInLanguageId ],
+			[ \PDO::PARAM_INT, \PDO::PARAM_INT ]
+		)->fetch();
+
+		if ( is_array( $record ) ) {
+			return $record['id'];
+		}
+
+		$this->connection->insert(
+			Tables::TERM_IN_LANGUAGE,
+			[
+				'type_id' => $termType,
+				'text_in_lang_id ' => $textInLanguageId,
+			]
+		);
+
+		return $this->connection->lastInsertId();
 	}
 
 	private function acquireTextInLanguageId( Term $term ) {

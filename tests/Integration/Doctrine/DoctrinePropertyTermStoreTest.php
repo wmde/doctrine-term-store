@@ -205,7 +205,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testInsertionUsesExistingRecords() {
+	public function testInsertionUsesExistingRecordsOfOtherProperties() {
 		$fingerprint = new Fingerprint(
 			new TermList( [
 				new Term( 'en', 'EnglishLabel' ),
@@ -222,6 +222,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 
 		$this->assertTableRowCount( 1, Tables::TEXT );
 		$this->assertTableRowCount( 1, Tables::TEXT_IN_LANGUAGE );
+		$this->assertTableRowCount( 1, Tables::TERM_IN_LANGUAGE );
 	}
 
 	private function assertTableRowCount( $expectedCount, $tableName ) {
