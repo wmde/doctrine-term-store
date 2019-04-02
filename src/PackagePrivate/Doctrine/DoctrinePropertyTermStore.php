@@ -14,6 +14,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	/* private */ const TYPE_LABEL = 1;
 	/* private */ const TYPE_DESCRIPTION = 2;
+	/* private */ const TYPE_ALIAS = 3;
 
 	private $connection;
 
@@ -28,6 +29,16 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 		foreach ( $terms->getDescriptions() as $term ) {
 			$this->insertTerm( $propertyId, $term, self::TYPE_DESCRIPTION );
+		}
+
+		foreach ( $terms->getAliasGroups() as $aliasGroup ) {
+			foreach ( $aliasGroup->getAliases() as $alias ) {
+				$this->insertTerm(
+					$propertyId,
+					new Term( $aliasGroup->getLanguageCode(), $alias ),
+					self::TYPE_ALIAS
+				);
+			}
 		}
 	}
 
@@ -93,6 +104,9 @@ EOT;
 					break;
 				case self::TYPE_DESCRIPTION:
 					$fingerprint->setDescription( $term->language, $term->text );
+					break;
+				case self::TYPE_ALIAS:
+					$fingerprint->setAliasGroup( $term->language, [ $term->text ] );
 					break;
 			}
 		}

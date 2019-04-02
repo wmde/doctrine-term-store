@@ -8,6 +8,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Term\AliasGroup;
+use Wikibase\DataModel\Term\AliasGroupList;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\DataModel\Term\TermList;
@@ -88,6 +90,24 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		$fingerprint = new Fingerprint(
 			null,
 			new TermList( [ new Term( 'de', 'ZeGermanDescription' ) ] )
+		);
+
+		$this->store->storeTerms( $propertyId, $fingerprint );
+
+		$this->assertEquals(
+			$fingerprint,
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
+	public function testAliasesRoundtrip() {
+		$propertyId = new PropertyId( 'P1' );
+		$fingerprint = new Fingerprint(
+			null,
+			null,
+			new AliasGroupList( [
+				new AliasGroup( 'fr', [ 'LeFrenchAlias' ] )
+			] )
 		);
 
 		$this->store->storeTerms( $propertyId, $fingerprint );
