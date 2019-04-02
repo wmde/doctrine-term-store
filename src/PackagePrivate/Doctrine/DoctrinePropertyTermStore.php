@@ -43,26 +43,26 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
-		$textId = $this->connection->insert(
+		$this->connection->insert(
 			Tables::TEXT,
 			[
 				'text' => $term->getText(),
 			]
 		);
 
-		$textInLangId = $this->connection->insert(
+		$this->connection->insert(
 			Tables::TEXT_IN_LANGUAGE,
 			[
 				'language' => $term->getLanguageCode(),
-				'text_id' => $textId,
+				'text_id' => $this->connection->lastInsertId(),
 			]
 		);
 
-		$termInLangId = $this->connection->insert(
+		$this->connection->insert(
 			Tables::TERM_IN_LANGUAGE,
 			[
 				'type_id' => $termType,
-				'text_in_lang_id ' => $textInLangId,
+				'text_in_lang_id ' => $this->connection->lastInsertId(),
 			]
 		);
 
@@ -70,7 +70,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 			Tables::PROPERTY_TERMS,
 			[
 				'property_id' => $propertyId->getNumericId(),
-				'term_in_lang_id' => $termInLangId,
+				'term_in_lang_id' => $this->connection->lastInsertId(),
 			]
 		);
 	}
@@ -87,15 +87,17 @@ INNER JOIN wbt_text_in_lang ON wbt_term_in_lang.text_in_lang_id = wbt_text_in_la
 INNER JOIN wbt_text ON wbt_text_in_lang.text_id = wbt_text.id
 EOT;
 
-		$term = $this->connection->executeQuery(
+		$statement = $this->connection->executeQuery(
 			$sql,
 			[
 			]
-		)->fetch( \PDO::FETCH_OBJ );
+		);
 
 		$fingerprint = new Fingerprint();
 
-		if ( $term ) {
+		$aliasGroups = [];
+
+		foreach ( $statement->fetchAll( \PDO::FETCH_OBJ ) as $term ) {
 			switch ( $term->type_id ) {
 				case self::TYPE_LABEL:
 					$fingerprint->setLabel( $term->language, $term->text );
@@ -104,9 +106,18 @@ EOT;
 					$fingerprint->setDescription( $term->language, $term->text );
 					break;
 				case self::TYPE_ALIAS:
-					$fingerprint->setAliasGroup( $term->language, [ $term->text ] );
+					if ( !array_key_exists( $term->language, $aliasGroups ) ) {
+						$aliasGroups[$term->language] = [];
+					}
+
+					$aliasGroups[$term->language][] = $term->text;
+
 					break;
 			}
+		}
+
+		foreach ( $aliasGroups as $language => $aliases ) {
+			$fingerprint->setAliasGroup( $language, $aliases );
 		}
 
 		return $fingerprint;

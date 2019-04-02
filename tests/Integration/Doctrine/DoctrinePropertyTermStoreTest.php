@@ -118,4 +118,30 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testMultipleTermsRoundtrip() {
+		$propertyId = new PropertyId( 'P1' );
+		$fingerprint = new Fingerprint(
+			new TermList( [
+				new Term( 'en', 'EnglishLabel' ),
+				new Term( 'de', 'ZeGermanLabel' ),
+				new Term( 'fr', 'LeFrenchLabel' ),
+			] ),
+			new TermList( [
+				new Term( 'en', 'EnglishDescription' ),
+				new Term( 'de', 'ZeGermanDescription' ),
+			] ),
+			new AliasGroupList( [
+				new AliasGroup( 'fr', [ 'LeFrenchAlias', 'LaFrenchAlias' ] ),
+				new AliasGroup( 'en', [ 'EnglishAlias' ] ),
+			] )
+		);
+
+		$this->store->storeTerms( $propertyId, $fingerprint );
+
+		$this->assertEquals(
+			$fingerprint,
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
 }
