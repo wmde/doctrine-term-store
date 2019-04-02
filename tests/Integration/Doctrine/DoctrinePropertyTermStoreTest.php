@@ -263,7 +263,20 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		return $connection;
 	}
 
+	public function testStoreTermsThrowsExceptionOnInfrastructureFailure() {
+		$store = $this->newStoreWithThrowingConnection();
+
+		$this->expectException( TermStoreException::class );
+		$store->storeTerms( new PropertyId( 'P1' ), $this->newFingerprintWithManyTerms() );
+	}
+
+	public function testDeleteTermsThrowsExceptionOnInfrastructureFailure() {
+		$store = $this->newStoreWithThrowingConnection();
+
+		$this->expectException( TermStoreException::class );
+		$store->deleteTerms( new PropertyId( 'P1' ) );
+	}
+
 	// TODO: deletion cleanup
-	// TODO: infra failures
 
 }

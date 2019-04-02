@@ -26,9 +26,17 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
-		// TODO: optimize by doing a select and a diff to see what to insert and what to delete
-		$this->deleteTerms( $propertyId );
+		try {
+			// TODO: optimize by doing a select and a diff to see what to insert and what to delete
+			$this->deleteTerms( $propertyId );
+			$this->insertTerms( $propertyId, $terms );
+		}
+		catch ( DBALException $ex ) {
+			throw new TermStoreException( $ex->getMessage(), $ex->getCode() );
+		}
+	}
 
+	private function insertTerms( PropertyId $propertyId, Fingerprint $terms ) {
 		foreach ( $terms->getLabels() as $term ) {
 			$this->insertTerm( $propertyId, $term, self::TYPE_LABEL );
 		}
@@ -158,11 +166,16 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function deleteTerms( PropertyId $propertyId ) {
-		$this->connection->delete(
-			Tables::PROPERTY_TERMS,
-			[ 'property_id' => $propertyId->getNumericId() ],
-			[ \PDO::PARAM_INT ]
-		);
+		try {
+			$this->connection->delete(
+				Tables::PROPERTY_TERMS,
+				[ 'property_id' => $propertyId->getNumericId() ],
+				[ \PDO::PARAM_INT ]
+			);
+		}
+		catch ( DBALException $ex ) {
+			throw new TermStoreException( $ex->getMessage(), $ex->getCode() );
+		}
 	}
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
