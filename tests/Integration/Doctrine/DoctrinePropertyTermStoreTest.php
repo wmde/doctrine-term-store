@@ -241,9 +241,6 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-
-	// TODO: insertion of existing elements
-	// TODO: update
 	// TODO: deletion cleanup
 	// TODO: infra failures
 
