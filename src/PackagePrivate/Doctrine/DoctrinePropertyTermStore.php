@@ -80,6 +80,12 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
+		return $this->recordsToFingerprint(
+			$this->newGetTermsStatement( $propertyId )->fetchAll( \PDO::FETCH_OBJ )
+		);
+	}
+
+	private function newGetTermsStatement( PropertyId $propertyId ) {
 		$sql = <<<EOT
 SELECT text, language, type_id FROM wbt_property_terms
 INNER JOIN wbt_term_in_lang ON wbt_property_terms.term_in_lang_id = wbt_term_in_lang.id
@@ -87,17 +93,19 @@ INNER JOIN wbt_text_in_lang ON wbt_term_in_lang.text_in_lang_id = wbt_text_in_la
 INNER JOIN wbt_text ON wbt_text_in_lang.text_id = wbt_text.id
 EOT;
 
-		$statement = $this->connection->executeQuery(
+		return $this->connection->executeQuery(
 			$sql,
 			[
 			]
 		);
+	}
 
+	private function recordsToFingerprint( $termRecords ) {
 		$fingerprint = new Fingerprint();
 
 		$aliasGroups = [];
 
-		foreach ( $statement->fetchAll( \PDO::FETCH_OBJ ) as $term ) {
+		foreach ( $termRecords as $term ) {
 			switch ( $term->type_id ) {
 				case self::TYPE_LABEL:
 					$fingerprint->setLabel( $term->language, $term->text );
@@ -122,4 +130,5 @@ EOT;
 
 		return $fingerprint;
 	}
+
 }
