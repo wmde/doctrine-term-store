@@ -63,18 +63,13 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			[
 				'id' => 1,
 				'property_id' => 1,
-				'term_in_lang_id' => 42,
+				'term_in_lang_id' => 1,
 			],
 			$this->connection->executeQuery( 'SELECT * FROM wbt_property_terms' )->fetch()
 		);
 	}
 
-	/**
-	 * @depends testTempPropertyTerms
-	 */
 	public function testLabelRoundtrip() {
-		$this->markTestIncomplete();
-
 		$propertyId = new PropertyId( 'P1' );
 		$fingerprint = new Fingerprint(
 			new TermList( [ new Term( 'en', 'EnglishLabel' ) ] )
