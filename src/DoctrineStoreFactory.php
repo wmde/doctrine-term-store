@@ -21,7 +21,7 @@ class DoctrineStoreFactory {
 	}
 
 	public function newPropertyTermStore(): PropertyTermStore {
-		return new DoctrinePropertyTermStore();
+		return new DoctrinePropertyTermStore( $this->connection );
 	}
 
 }
