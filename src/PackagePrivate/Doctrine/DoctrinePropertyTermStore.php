@@ -7,11 +7,13 @@ namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 use Doctrine\DBAL\Connection;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Term\Fingerprint;
+use Wikibase\DataModel\Term\Term;
 use Wikibase\TermStore\PropertyTermStore;
 
 class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	/* private */ const TYPE_LABEL = 1;
+	/* private */ const TYPE_DESCRIPTION = 2;
 
 	private $connection;
 
@@ -20,19 +22,27 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
-		$label = $terms->getLabels()->getByLanguage( 'en' );
+		foreach ( $terms->getLabels() as $term ) {
+			$this->insertTerm( $propertyId, $term, self::TYPE_LABEL );
+		}
 
+		foreach ( $terms->getDescriptions() as $term ) {
+			$this->insertTerm( $propertyId, $term, self::TYPE_DESCRIPTION );
+		}
+	}
+
+	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
 		$textId = $this->connection->insert(
 			Tables::TEXT,
 			[
-				'text' => $label->getText(),
+				'text' => $term->getText(),
 			]
 		);
 
 		$textInLangId = $this->connection->insert(
 			Tables::TEXT_IN_LANGUAGE,
 			[
-				'language' => $label->getLanguageCode(),
+				'language' => $term->getLanguageCode(),
 				'text_id' => $textId,
 			]
 		);
@@ -40,7 +50,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 		$termInLangId = $this->connection->insert(
 			Tables::TERM_IN_LANGUAGE,
 			[
-				'type_id' => self::TYPE_LABEL,
+				'type_id' => $termType,
 				'text_in_lang_id ' => $textInLangId,
 			]
 		);
@@ -77,7 +87,14 @@ EOT;
 		$fingerprint = new Fingerprint();
 
 		if ( $term ) {
-			$fingerprint->setLabel( $term->language, $term->text );
+			switch ( $term->type_id ) {
+				case self::TYPE_LABEL:
+					$fingerprint->setLabel( $term->language, $term->text );
+					break;
+				case self::TYPE_DESCRIPTION:
+					$fingerprint->setDescription( $term->language, $term->text );
+					break;
+			}
 		}
 
 		return $fingerprint;

@@ -83,4 +83,19 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testDescriptionRoundtrip() {
+		$propertyId = new PropertyId( 'P1' );
+		$fingerprint = new Fingerprint(
+			null,
+			new TermList( [ new Term( 'de', 'ZeGermanDescription' ) ] )
+		);
+
+		$this->store->storeTerms( $propertyId, $fingerprint );
+
+		$this->assertEquals(
+			$fingerprint,
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
 }
