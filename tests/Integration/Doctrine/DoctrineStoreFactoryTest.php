@@ -9,6 +9,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\TestCase;
 use Wikibase\TermStore\DoctrineStoreFactory;
+use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
 
 /**
  * @covers \Wikibase\TermStore\DoctrineStoreFactory
@@ -31,11 +32,11 @@ class DoctrineStoreFactoryTest extends TestCase {
 	public function testCreateSchemaCreatesTables() {
 		$this->newStoreFactory()->createSchema();
 
-		$this->assertTableExists( 'wbt_item_terms' );
-		$this->assertTableExists( 'wbt_property_terms' );
-		$this->assertTableExists( 'wbt_term_in_lang' );
-		$this->assertTableExists( 'wbt_text_in_lang' );
-		$this->assertTableExists( 'wbt_text' );
+		$this->assertTableExists( Tables::ITEM_TERMS );
+		$this->assertTableExists( Tables::PROPERTY_TERMS );
+		$this->assertTableExists( Tables::TERM_IN_LANGUAGE );
+		$this->assertTableExists( Tables::TEXT_IN_LANGUAGE );
+		$this->assertTableExists( Tables::TEXT );
 //		$this->assertTableExists( 'wbt_type' );
 	}
 
@@ -53,7 +54,7 @@ class DoctrineStoreFactoryTest extends TestCase {
 	public function testCreateSchemaCreatesItemTermsColumns() {
 		$this->newStoreFactory()->createSchema();
 
-		$columns = $this->connection->getSchemaManager()->listTableColumns( 'wbt_item_terms' );
+		$columns = $this->connection->getSchemaManager()->listTableColumns( Tables::ITEM_TERMS );
 
 		$this->assertTrue( $columns['id']->getAutoincrement(), 'id column should have auto increment' );
 		$this->assertTrue( $columns['id']->getNotnull(), 'id column should not be nullable' );
@@ -67,7 +68,7 @@ class DoctrineStoreFactoryTest extends TestCase {
 	public function testCreateSchemaCreatesItemTermsIndexes() {
 		$this->newStoreFactory()->createSchema();
 
-		$table = $this->connection->getSchemaManager()->listTableDetails( 'wbt_item_terms' );
+		$table = $this->connection->getSchemaManager()->listTableDetails( Tables::ITEM_TERMS );
 
 		$this->assertSame(
 			[ 'id' ],
