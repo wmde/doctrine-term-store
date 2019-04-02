@@ -54,24 +54,6 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testTempPropertyTerms() {
-		$propertyId = new PropertyId( 'P1' );
-		$fingerprint = new Fingerprint(
-			new TermList( [ new Term( 'en', 'EnglishLabel' ) ] )
-		);
-
-		$this->store->storeTerms( $propertyId, $fingerprint );
-
-		$this->assertEquals(
-			[
-				'id' => 1,
-				'property_id' => 1,
-				'term_in_lang_id' => 1,
-			],
-			$this->connection->executeQuery( 'SELECT * FROM wbt_property_terms' )->fetch()
-		);
-	}
-
 	/**
 	 * @dataProvider fingerprintProvider
 	 */
