@@ -26,14 +26,14 @@ $factory->createSchema();
 
 ## Installation
 
-To use the UPDATE_NAME library in your project, simply add a dependency on wmde/wikibase-term-store
+To use the Wikibase TermStore library in your project, simply add a dependency on wikibase/term-store
 to your project's `composer.json` file. Here is a minimal example of a `composer.json`
-file that just defines a dependency on wmde/wikibase-term-store 1.x:
+file that just defines a dependency on wikibase/term-store 1.x:
 
 ```json
 {
     "require": {
-        "wmde/wikibase-term-store": "~1.0"
+        "wikibase/term-store": "~1.0"
     }
 }
 ```

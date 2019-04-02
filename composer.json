@@ -1,5 +1,5 @@
 {
-	"name": "wmde/wikibase-term-store",
+	"name": "wikibase/term-store",
 	"license": "BSD-3-Clause",
 	"description": "Small library for looking up terms by item or property id or findings ids by term",
 	"require": {
