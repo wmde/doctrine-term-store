@@ -205,21 +205,19 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
-	public function testInsertionOfExistingTerms() {
+	public function testInsertionUsesExistingRecords() {
 		$fingerprint = new Fingerprint(
 			new TermList( [
 				new Term( 'en', 'EnglishLabel' ),
 			] )
 		);
 
-		$this->store->storeTerms(
-			new PropertyId( 'P1' ),
-			$fingerprint
-		);
+		$this->store->storeTerms( new PropertyId( 'P1' ), $fingerprint );
+		$this->store->storeTerms( new PropertyId( 'P2' ), $fingerprint );
 
-		$this->store->storeTerms(
-			new PropertyId( 'P2' ),
-			$fingerprint
+		$this->assertEquals(
+			$fingerprint,
+			$this->store->getTerms( new PropertyId( 'P2' ) )
 		);
 
 		$this->assertTableRowCount( 1, Tables::TEXT );
