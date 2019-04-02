@@ -221,12 +221,14 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 
 		$this->assertTableRowCount( 1, Tables::TEXT );
+		$this->assertTableRowCount( 1, Tables::TEXT_IN_LANGUAGE );
 	}
 
 	private function assertTableRowCount( $expectedCount, $tableName ) {
 		$this->assertSame(
 			(string)$expectedCount,
-			$this->connection->executeQuery( 'SELECT count(*) as records FROM ' . $tableName )->fetchColumn()
+			$this->connection->executeQuery( 'SELECT count(*) as records FROM ' . $tableName )->fetchColumn(),
+			'Table ' . $tableName . ' should contain ' . (string)$expectedCount . ' records'
 		);
 	}
 
