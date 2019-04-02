@@ -222,9 +222,13 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			$fingerprint
 		);
 
+		$this->assertTableRowCount( 1, Tables::TEXT );
+	}
+
+	private function assertTableRowCount( $expectedCount, $tableName ) {
 		$this->assertSame(
-			'1',
-			$this->connection->executeQuery( 'SELECT count(*) as records FROM ' . Tables::TEXT )->fetchColumn()
+			(string)$expectedCount,
+			$this->connection->executeQuery( 'SELECT count(*) as records FROM ' . $tableName )->fetchColumn()
 		);
 	}
 
