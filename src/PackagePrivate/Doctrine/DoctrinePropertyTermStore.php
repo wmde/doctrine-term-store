@@ -91,11 +91,13 @@ SELECT text, language, type_id FROM wbt_property_terms
 INNER JOIN wbt_term_in_lang ON wbt_property_terms.term_in_lang_id = wbt_term_in_lang.id
 INNER JOIN wbt_text_in_lang ON wbt_term_in_lang.text_in_lang_id = wbt_text_in_lang.id
 INNER JOIN wbt_text ON wbt_text_in_lang.text_id = wbt_text.id
+WHERE property_id = ?
 EOT;
 
 		return $this->connection->executeQuery(
 			$sql,
 			[
+				$propertyId->getNumericId()
 			]
 		);
 	}

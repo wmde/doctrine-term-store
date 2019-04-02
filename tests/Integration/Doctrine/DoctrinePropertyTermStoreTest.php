@@ -144,4 +144,44 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testOnlyTermsOfThePropertyAreReturned() {
+		$propertyId = new PropertyId( 'P1' );
+		$terms = new Fingerprint(
+			new TermList( [
+				new Term( 'de', 'ZeGermanLabel' ),
+			] ),
+			new TermList( [
+				new Term( 'de', 'ZeGermanDescription' ),
+			] ),
+			new AliasGroupList( [
+				new AliasGroup( 'de', [ 'ZeGermanAlias' ] ),
+			] )
+		);
+
+		$this->store->storeTerms(
+			$propertyId,
+			$terms
+		);
+
+		$this->store->storeTerms(
+			new PropertyId( 'P2' ),
+			new Fingerprint(
+				new TermList( [
+					new Term( 'en', 'EnglishLabel' ),
+				] ),
+				new TermList( [
+					new Term( 'en', 'EnglishDescription' ),
+				] ),
+				new AliasGroupList( [
+					new AliasGroup( 'en', [ 'EnglishAlias' ] ),
+				] )
+			)
+		);
+
+		$this->assertEquals(
+			$terms,
+			$this->store->getTerms( $propertyId )
+		);
+	}
+
 }
