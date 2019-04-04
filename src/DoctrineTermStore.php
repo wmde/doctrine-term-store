@@ -12,7 +12,7 @@ use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 /**
  * Doctrine implementation of the Abstract Factory TermStoreFactory
  */
-class DoctrineStoreFactory implements TermStoreFactory {
+class DoctrineTermStore implements TermStore {
 
 	private $connection;
 	private $tableNames;

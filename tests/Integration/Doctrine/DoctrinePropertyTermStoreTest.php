@@ -14,7 +14,7 @@ use Wikibase\DataModel\Term\AliasGroupList;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\DataModel\Term\TermList;
-use Wikibase\TermStore\DoctrineStoreFactory;
+use Wikibase\TermStore\DoctrineTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 use Wikibase\TermStore\PropertyTermStore;
 use Wikibase\TermStore\TermStoreException;
@@ -47,7 +47,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			'memory' => true,
 		] );
 
-		$factory = new DoctrineStoreFactory( $this->connection, 'prefix_' );
+		$factory = new DoctrineTermStore( $this->connection, 'prefix_' );
 
 		$factory->install();
 
@@ -257,7 +257,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 	}
 
 	private function newStoreWithThrowingConnection(): PropertyTermStore {
-		return ( new DoctrineStoreFactory( $this->newThrowingDoctrineConnection(), '' ) )->newPropertyTermStore();
+		return ( new DoctrineTermStore( $this->newThrowingDoctrineConnection(), '' ) )->newPropertyTermStore();
 	}
 
 	private function newThrowingDoctrineConnection(): Connection {

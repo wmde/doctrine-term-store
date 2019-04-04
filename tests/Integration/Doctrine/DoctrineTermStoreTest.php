@@ -8,14 +8,14 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\TestCase;
-use Wikibase\TermStore\DoctrineStoreFactory;
+use Wikibase\TermStore\DoctrineTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 
 /**
- * @covers \Wikibase\TermStore\DoctrineStoreFactory
+ * @covers \Wikibase\TermStore\DoctrineTermStore
  * @covers \Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineSchemaCreator
  */
-class DoctrineStoreFactoryTest extends TestCase {
+class DoctrineTermStoreTest extends TestCase {
 
 	/* private */ const PREFIX = 'prefix_';
 
@@ -48,8 +48,8 @@ class DoctrineStoreFactoryTest extends TestCase {
 		$this->assertTableExists( $this->tableNames->text() );
 	}
 
-	private function newStoreFactory(): DoctrineStoreFactory {
-		return new DoctrineStoreFactory( $this->connection, self::PREFIX );
+	private function newStoreFactory(): DoctrineTermStore {
+		return new DoctrineTermStore( $this->connection, self::PREFIX );
 	}
 
 	private function assertTableExists( string $tableName ) {
@@ -116,8 +116,8 @@ class DoctrineStoreFactoryTest extends TestCase {
 	}
 
 	public function testCanInstallMultipleStoresInOneDatabaseUsingDifferentPrefixes() {
-		( new DoctrineStoreFactory( $this->connection, 'one_' ) )->install();
-		( new DoctrineStoreFactory( $this->connection, 'two_' ) )->install();
+		( new DoctrineTermStore( $this->connection, 'one_' ) )->install();
+		( new DoctrineTermStore( $this->connection, 'two_' ) )->install();
 
 		$this->assertTableExists( ( new TableNames( 'one_' ) )->itemTerms() );
 		$this->assertTableExists( ( new TableNames( 'two_' ) )->itemTerms() );

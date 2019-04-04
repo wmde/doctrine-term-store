@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace Wikibase\TermStore;
 
-interface TermStoreFactory {
+interface TermStore {
 
 	public function install();
 
