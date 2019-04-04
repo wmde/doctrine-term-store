@@ -6,7 +6,9 @@ namespace Wikibase\TermStore;
 
 interface TermStoreFactory {
 
-	public function createSchema();
+	public function install();
+
+	public function uninstall();
 
 	public function newPropertyTermStore(): PropertyTermStore;
 

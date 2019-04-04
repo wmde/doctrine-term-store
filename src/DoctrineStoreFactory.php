@@ -19,8 +19,12 @@ class DoctrineStoreFactory implements TermStoreFactory {
 		$this->connection = $connection;
 	}
 
-	public function createSchema() {
+	public function install() {
 		( new DoctrineSchemaCreator( $this->connection->getSchemaManager() ) )->createSchema();
+	}
+
+	public function uninstall() {
+		( new DoctrineSchemaCreator( $this->connection->getSchemaManager() ) )->dropSchema();
 	}
 
 	public function newPropertyTermStore(): PropertyTermStore {

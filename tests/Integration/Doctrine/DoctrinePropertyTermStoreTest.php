@@ -44,7 +44,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 
 		$factory = new DoctrineStoreFactory( $this->connection );
 
-		$factory->createSchema();
+		$factory->install();
 
 		$this->store = $factory->newPropertyTermStore();
 	}

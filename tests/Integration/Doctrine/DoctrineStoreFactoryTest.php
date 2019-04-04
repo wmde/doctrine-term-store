@@ -29,8 +29,8 @@ class DoctrineStoreFactoryTest extends TestCase {
 		] );
 	}
 
-	public function testCreateSchemaCreatesTables() {
-		$this->newStoreFactory()->createSchema();
+	public function testInstallCreatesTables() {
+		$this->newStoreFactory()->install();
 
 		$this->assertTableExists( Tables::ITEM_TERMS );
 		$this->assertTableExists( Tables::PROPERTY_TERMS );
@@ -50,8 +50,8 @@ class DoctrineStoreFactoryTest extends TestCase {
 		);
 	}
 
-	public function testCreateSchemaCreatesItemTermsColumns() {
-		$this->newStoreFactory()->createSchema();
+	public function testInstallCreatesItemTermsColumns() {
+		$this->newStoreFactory()->install();
 
 		$columns = $this->connection->getSchemaManager()->listTableColumns( Tables::ITEM_TERMS );
 
@@ -64,8 +64,8 @@ class DoctrineStoreFactoryTest extends TestCase {
 		);
 	}
 
-	public function testCreateSchemaCreatesItemTermsIndexes() {
-		$this->newStoreFactory()->createSchema();
+	public function testInstallCreatesItemTermsIndexes() {
+		$this->newStoreFactory()->install();
 
 		$table = $this->connection->getSchemaManager()->listTableDetails( Tables::ITEM_TERMS );
 
@@ -85,6 +85,24 @@ class DoctrineStoreFactoryTest extends TestCase {
 			[ 'term_in_lang_id' ],
 			$table->getIndex( 'wbt_item_terms_term_in_lang_id' )->getColumns(),
 			'wbt_item_terms_term_in_lang_id index should exist'
+		);
+	}
+
+	public function testUninstallDropsTables() {
+		$this->newStoreFactory()->install();
+		$this->newStoreFactory()->uninstall();
+
+		$this->assertTableDoesNotExist( Tables::ITEM_TERMS );
+		$this->assertTableDoesNotExist( Tables::PROPERTY_TERMS );
+		$this->assertTableDoesNotExist( Tables::TERM_IN_LANGUAGE );
+		$this->assertTableDoesNotExist( Tables::TEXT_IN_LANGUAGE );
+		$this->assertTableDoesNotExist( Tables::TEXT );
+	}
+
+	private function assertTableDoesNotExist( string $tableName ) {
+		$this->assertFalse(
+			$this->connection->getSchemaManager()->tablesExist( $tableName ),
+			'Table "' . $tableName . '" should NOT exist'
 		);
 	}
 
