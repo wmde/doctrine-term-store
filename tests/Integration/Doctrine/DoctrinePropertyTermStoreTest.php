@@ -15,7 +15,7 @@ use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\DataModel\Term\TermList;
 use Wikibase\TermStore\DoctrineStoreFactory;
-use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
+use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 use Wikibase\TermStore\PropertyTermStore;
 use Wikibase\TermStore\TermStoreException;
 
@@ -27,14 +27,19 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 	const UNKNOWN_PROPERTY_ID = 'P404';
 
 	/**
+	 * @var Connection
+	 */
+	private $connection;
+
+	/**
 	 * @var PropertyTermStore
 	 */
 	private $store;
 
 	/**
-	 * @var Connection
+	 * @var TableNames
 	 */
-	private $connection;
+	private $tableNames;
 
 	public function setUp() {
 		$this->connection = DriverManager::getConnection( [
@@ -42,11 +47,12 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			'memory' => true,
 		] );
 
-		$factory = new DoctrineStoreFactory( $this->connection );
+		$factory = new DoctrineStoreFactory( $this->connection, 'prefix_' );
 
 		$factory->install();
 
 		$this->store = $factory->newPropertyTermStore();
+		$this->tableNames = new TableNames( 'prefix_' );
 	}
 
 	public function testWhenPropertyIsNotStored_getTermsReturnsEmptyFingerprint() {
@@ -204,9 +210,9 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			$this->store->getTerms( new PropertyId( 'P2' ) )
 		);
 
-		$this->assertTableRowCount( 1, Tables::TEXT );
-		$this->assertTableRowCount( 1, Tables::TEXT_IN_LANGUAGE );
-		$this->assertTableRowCount( 1, Tables::TERM_IN_LANGUAGE );
+		$this->assertTableRowCount( 1, $this->tableNames->text() );
+		$this->assertTableRowCount( 1, $this->tableNames->textInLanguage() );
+		$this->assertTableRowCount( 1, $this->tableNames->termInLanguage() );
 	}
 
 	private function assertTableRowCount( $expectedCount, $tableName ) {
@@ -251,7 +257,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 	}
 
 	private function newStoreWithThrowingConnection(): PropertyTermStore {
-		return ( new DoctrineStoreFactory( $this->newThrowingDoctrineConnection() ) )->newPropertyTermStore();
+		return ( new DoctrineStoreFactory( $this->newThrowingDoctrineConnection(), '' ) )->newPropertyTermStore();
 	}
 
 	private function newThrowingDoctrineConnection(): Connection {

@@ -20,9 +20,11 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	/* private */ const TYPE_ALIAS = 3;
 
 	private $connection;
+	private $tableNames;
 
-	public function __construct( Connection $connection ) {
+	public function __construct( Connection $connection, TableNames $tableNames ) {
 		$this->connection = $connection;
+		$this->tableNames = $tableNames;
 	}
 
 	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
@@ -58,7 +60,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
 		$this->connection->insert(
-			Tables::PROPERTY_TERMS,
+			$this->tableNames->propertyTerms(),
 			[
 				'property_id' => $propertyId->getNumericId(),
 				'term_in_lang_id' => $this->acquireTermInLanguageId( $term, $termType ),
@@ -82,7 +84,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTermInLanguageId( $termType, $textInLanguageId ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM wbt_term_in_lang WHERE type_id = ? AND text_in_lang_id = ?',
+			'SELECT id FROM ' . $this->tableNames->termInLanguage() . ' WHERE type_id = ? AND text_in_lang_id = ?',
 			[ $termType, $textInLanguageId ],
 			[ \PDO::PARAM_INT, \PDO::PARAM_INT ]
 		)->fetch();
@@ -92,7 +94,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTermInLanguageRecord( $termType, $textInLanguageId ) {
 		$this->connection->insert(
-			Tables::TERM_IN_LANGUAGE,
+			$this->tableNames->termInLanguage(),
 			[
 				'type_id' => $termType,
 				'text_in_lang_id ' => $textInLanguageId,
@@ -116,7 +118,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTextInLanguageId( Term $term, $textId ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM wbt_text_in_lang WHERE language = ? AND text_id = ?',
+			'SELECT id FROM ' . $this->tableNames->textInLanguage() . ' WHERE language = ? AND text_id = ?',
 			[ $term->getLanguageCode(), $textId ],
 			[ \PDO::PARAM_STR, \PDO::PARAM_INT ]
 		)->fetch();
@@ -126,7 +128,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTextInLanguageRecord( Term $term, $textId ) {
 		$this->connection->insert(
-			Tables::TEXT_IN_LANGUAGE,
+			$this->tableNames->textInLanguage(),
 			[
 				'language' => $term->getLanguageCode(),
 				'text_id' => $textId,
@@ -148,7 +150,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTextId( Term $term ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM wbt_text WHERE text = ?',
+			'SELECT id FROM ' . $this->tableNames->text() . ' WHERE text = ?',
 			[ $term->getText() ],
 			[ \PDO::PARAM_STR ]
 		)->fetch();
@@ -158,7 +160,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTextRecord( Term $term ) {
 		$this->connection->insert(
-			Tables::TEXT,
+			$this->tableNames->text(),
 			[
 				'text' => $term->getText(),
 			]
@@ -168,7 +170,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	public function deleteTerms( PropertyId $propertyId ) {
 		try {
 			$this->connection->delete(
-				Tables::PROPERTY_TERMS,
+				$this->tableNames->propertyTerms(),
 				[ 'property_id' => $propertyId->getNumericId() ],
 				[ \PDO::PARAM_INT ]
 			);
@@ -191,10 +193,10 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function newGetTermsStatement( PropertyId $propertyId ): Statement {
 		$sql = <<<EOT
-SELECT text, language, type_id FROM wbt_property_terms
-INNER JOIN wbt_term_in_lang ON wbt_property_terms.term_in_lang_id = wbt_term_in_lang.id
-INNER JOIN wbt_text_in_lang ON wbt_term_in_lang.text_in_lang_id = wbt_text_in_lang.id
-INNER JOIN wbt_text ON wbt_text_in_lang.text_id = wbt_text.id
+SELECT text, language, type_id FROM {$this->tableNames->propertyTerms()}
+INNER JOIN {$this->tableNames->termInLanguage()} ON {$this->tableNames->propertyTerms()}.term_in_lang_id = {$this->tableNames->termInLanguage()}.id
+INNER JOIN {$this->tableNames->textInLanguage()} ON {$this->tableNames->termInLanguage()}.text_in_lang_id = {$this->tableNames->textInLanguage()}.id
+INNER JOIN {$this->tableNames->text()} ON {$this->tableNames->textInLanguage()}.text_id = {$this->tableNames->text()}.id
 WHERE property_id = ?
 EOT;
 

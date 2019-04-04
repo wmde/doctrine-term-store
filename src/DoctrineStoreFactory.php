@@ -7,7 +7,7 @@ namespace Wikibase\TermStore;
 use Doctrine\DBAL\Connection;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrinePropertyTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineSchemaCreator;
-use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
+use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 
 /**
  * Doctrine implementation of the Abstract Factory TermStoreFactory
@@ -15,13 +15,18 @@ use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
 class DoctrineStoreFactory implements TermStoreFactory {
 
 	private $connection;
+	private $tableNames;
 
-	public function __construct( Connection $connection ) {
+	public function __construct( Connection $connection, $tableNamePrefix ) {
 		$this->connection = $connection;
+		$this->tableNames = new TableNames( $tableNamePrefix );
 	}
 
 	public function install() {
-		( new DoctrineSchemaCreator( $this->connection->getSchemaManager() ) )->createSchema();
+		( new DoctrineSchemaCreator(
+			$this->connection->getSchemaManager(),
+			$this->tableNames
+		) )->createSchema();
 	}
 
 	/**
@@ -29,15 +34,15 @@ class DoctrineStoreFactory implements TermStoreFactory {
 	 */
 	public function uninstall() {
 		$schema = $this->connection->getSchemaManager();
-		$schema->dropTable( Tables::ITEM_TERMS );
-		$schema->dropTable( Tables::PROPERTY_TERMS );
-		$schema->dropTable( Tables::TERM_IN_LANGUAGE );
-		$schema->dropTable( Tables::TEXT_IN_LANGUAGE );
-		$schema->dropTable( Tables::TEXT );
+		$schema->dropTable( $this->tableNames->itemTerms() );
+		$schema->dropTable( $this->tableNames->propertyTerms() );
+		$schema->dropTable( $this->tableNames->termInLanguage() );
+		$schema->dropTable( $this->tableNames->textInLanguage() );
+		$schema->dropTable( $this->tableNames->text() );
 	}
 
 	public function newPropertyTermStore(): PropertyTermStore {
-		return new DoctrinePropertyTermStore( $this->connection );
+		return new DoctrinePropertyTermStore( $this->connection, $this->tableNames );
 	}
 
 }

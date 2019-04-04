@@ -9,7 +9,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\TestCase;
 use Wikibase\TermStore\DoctrineStoreFactory;
-use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
+use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 
 /**
  * @covers \Wikibase\TermStore\DoctrineStoreFactory
@@ -17,30 +17,39 @@ use Wikibase\TermStore\PackagePrivate\Doctrine\Tables;
  */
 class DoctrineStoreFactoryTest extends TestCase {
 
+	/* private */ const PREFIX = 'prefix_';
+
 	/**
 	 * @var Connection
 	 */
 	private $connection;
+
+	/**
+	 * @var TableNames
+	 */
+	private $tableNames;
 
 	public function setUp() {
 		$this->connection = DriverManager::getConnection( [
 			'driver' => 'pdo_sqlite',
 			'memory' => true,
 		] );
+
+		$this->tableNames = new TableNames( 'prefix_' );
 	}
 
 	public function testInstallCreatesTables() {
 		$this->newStoreFactory()->install();
 
-		$this->assertTableExists( Tables::ITEM_TERMS );
-		$this->assertTableExists( Tables::PROPERTY_TERMS );
-		$this->assertTableExists( Tables::TERM_IN_LANGUAGE );
-		$this->assertTableExists( Tables::TEXT_IN_LANGUAGE );
-		$this->assertTableExists( Tables::TEXT );
+		$this->assertTableExists( $this->tableNames->itemTerms() );
+		$this->assertTableExists( $this->tableNames->propertyTerms() );
+		$this->assertTableExists( $this->tableNames->termInLanguage() );
+		$this->assertTableExists( $this->tableNames->textInLanguage() );
+		$this->assertTableExists( $this->tableNames->text() );
 	}
 
 	private function newStoreFactory(): DoctrineStoreFactory {
-		return new DoctrineStoreFactory( $this->connection );
+		return new DoctrineStoreFactory( $this->connection, self::PREFIX );
 	}
 
 	private function assertTableExists( string $tableName ) {
@@ -53,7 +62,7 @@ class DoctrineStoreFactoryTest extends TestCase {
 	public function testInstallCreatesItemTermsColumns() {
 		$this->newStoreFactory()->install();
 
-		$columns = $this->connection->getSchemaManager()->listTableColumns( Tables::ITEM_TERMS );
+		$columns = $this->connection->getSchemaManager()->listTableColumns( $this->tableNames->itemTerms() );
 
 		$this->assertTrue( $columns['id']->getAutoincrement(), 'id column should have auto increment' );
 		$this->assertTrue( $columns['id']->getNotnull(), 'id column should not be nullable' );
@@ -67,7 +76,7 @@ class DoctrineStoreFactoryTest extends TestCase {
 	public function testInstallCreatesItemTermsIndexes() {
 		$this->newStoreFactory()->install();
 
-		$table = $this->connection->getSchemaManager()->listTableDetails( Tables::ITEM_TERMS );
+		$table = $this->connection->getSchemaManager()->listTableDetails( $this->tableNames->itemTerms() );
 
 		$this->assertSame(
 			[ 'id' ],
@@ -92,11 +101,11 @@ class DoctrineStoreFactoryTest extends TestCase {
 		$this->newStoreFactory()->install();
 		$this->newStoreFactory()->uninstall();
 
-		$this->assertTableDoesNotExist( Tables::ITEM_TERMS );
-		$this->assertTableDoesNotExist( Tables::PROPERTY_TERMS );
-		$this->assertTableDoesNotExist( Tables::TERM_IN_LANGUAGE );
-		$this->assertTableDoesNotExist( Tables::TEXT_IN_LANGUAGE );
-		$this->assertTableDoesNotExist( Tables::TEXT );
+		$this->assertTableDoesNotExist( $this->tableNames->itemTerms() );
+		$this->assertTableDoesNotExist( $this->tableNames->propertyTerms() );
+		$this->assertTableDoesNotExist( $this->tableNames->termInLanguage() );
+		$this->assertTableDoesNotExist( $this->tableNames->textInLanguage() );
+		$this->assertTableDoesNotExist( $this->tableNames->text() );
 	}
 
 	private function assertTableDoesNotExist( string $tableName ) {

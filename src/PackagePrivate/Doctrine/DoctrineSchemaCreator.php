@@ -11,9 +11,11 @@ use Doctrine\DBAL\Types\Type;
 class DoctrineSchemaCreator {
 
 	private $schemaManager;
+	private $tableNames;
 
-	public function __construct( AbstractSchemaManager $schemaManager ) {
+	public function __construct( AbstractSchemaManager $schemaManager, TableNames $tableNames ) {
 		$this->schemaManager = $schemaManager;
+		$this->tableNames = $tableNames;
 	}
 
 	public function createSchema() {
@@ -25,7 +27,7 @@ class DoctrineSchemaCreator {
 	}
 
 	private function newItemTermsTable(): Table {
-		$table = new Table( Tables::ITEM_TERMS );
+		$table = new Table( $this->tableNames->itemTerms() );
 
 		$table->addColumn( 'id', Type::BIGINT, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'item_id', Type::INTEGER, [ 'unsigned' => true ] );
@@ -39,7 +41,7 @@ class DoctrineSchemaCreator {
 	}
 
 	private function newPropertyTermsTable(): Table {
-		$table = new Table( Tables::PROPERTY_TERMS );
+		$table = new Table( $this->tableNames->propertyTerms() );
 
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'property_id', Type::INTEGER, [ 'unsigned' => true ] );
@@ -53,7 +55,7 @@ class DoctrineSchemaCreator {
 	}
 
 	private function newTermInLangTable(): Table {
-		$table = new Table( Tables::TERM_IN_LANGUAGE );
+		$table = new Table( $this->tableNames->termInLanguage() );
 
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'type_id', Type::INTEGER, [ 'unsigned' => true ] );
@@ -67,7 +69,7 @@ class DoctrineSchemaCreator {
 	}
 
 	private function newTextInLangTable(): Table {
-		$table = new Table( Tables::TEXT_IN_LANGUAGE );
+		$table = new Table( $this->tableNames->textInLanguage() );
 
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'language', Type::BINARY, [ 'length' => 10 ] );
@@ -81,7 +83,7 @@ class DoctrineSchemaCreator {
 	}
 
 	private function newTextTable(): Table {
-		$table = new Table( Tables::TEXT );
+		$table = new Table( $this->tableNames->text() );
 
 		$table->addColumn( 'id', Type::INTEGER, [ 'autoincrement' => true, 'unsigned' => true ] );
 		$table->addColumn( 'text', Type::BINARY, [ 'length' => 255 ] );
