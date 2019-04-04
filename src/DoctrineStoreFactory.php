@@ -8,7 +8,10 @@ use Doctrine\DBAL\Connection;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrinePropertyTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineSchemaCreator;
 
-class DoctrineStoreFactory {
+/**
+ * Doctrine implementation of the Abstract Factory TermStoreFactory
+ */
+class DoctrineStoreFactory implements TermStoreFactory {
 
 	private $connection;
 
