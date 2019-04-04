@@ -6,22 +6,22 @@ Small library for looking up terms by item or property id or finding ids by term
 
 ## Usage
 
-The public entry point of the package is `DoctrineStoreFactory`, which is used to construct all services.
+The public entry point of the package is `DoctrineTermStore`, which is used to construct all services.
 
 ```php
-$factory = new DoctrineStoreFactory( /* config */ );
+$termStore = new DoctrineTermStore( /* config */ );
 ```
 
 Getting terms:
 
 ```php
-$fingerprint = $factory->newPropertyTermStore()->getTerms( $propertyId );
+$fingerprint = $termStore->newPropertyTermStore()->getTerms( $propertyId );
 ```
 
 Schema creation:
 
 ```php
-$factory->createSchema();
+$termStore->install();
 ```
 
 ## Installation
