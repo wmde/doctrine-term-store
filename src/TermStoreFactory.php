@@ -8,6 +8,9 @@ interface TermStoreFactory {
 
 	public function install();
 
+	/**
+	 * CAUTION! This removes all data!
+	 */
 	public function uninstall();
 
 	public function newPropertyTermStore(): PropertyTermStore;

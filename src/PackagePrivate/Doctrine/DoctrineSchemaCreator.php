@@ -24,14 +24,6 @@ class DoctrineSchemaCreator {
 		$this->schemaManager->createTable( $this->newTextTable() );
 	}
 
-	public function dropSchema() {
-		$this->schemaManager->dropTable( Tables::ITEM_TERMS );
-		$this->schemaManager->dropTable( Tables::PROPERTY_TERMS );
-		$this->schemaManager->dropTable( Tables::TERM_IN_LANGUAGE );
-		$this->schemaManager->dropTable( Tables::TEXT_IN_LANGUAGE );
-		$this->schemaManager->dropTable( Tables::TEXT );
-	}
-
 	private function newItemTermsTable(): Table {
 		$table = new Table( Tables::ITEM_TERMS );
 
