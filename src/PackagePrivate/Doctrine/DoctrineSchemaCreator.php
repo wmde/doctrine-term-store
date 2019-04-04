@@ -34,8 +34,8 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'term_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
 
 		$table->setPrimaryKey( [ 'id' ] );
-		$table->addIndex( [ 'item_id' ], 'wbt_item_terms_item_id' );
-		$table->addIndex( [ 'term_in_lang_id' ], 'wbt_item_terms_term_in_lang_id' );
+		$table->addIndex( [ 'item_id' ], $this->tableNames->prefix( 'wbt_item_terms_item_id' ) );
+		$table->addIndex( [ 'term_in_lang_id' ], $this->tableNames->prefix( 'wbt_item_terms_term_in_lang_id' ) );
 
 		return $table;
 	}
@@ -48,8 +48,8 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'term_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
 
 		$table->setPrimaryKey( [ 'id' ] );
-		$table->addIndex( [ 'property_id' ], 'wbt_property_terms_property_id' );
-		$table->addIndex( [ 'term_in_lang_id' ], 'wbt_property_terms_term_in_lang_id' );
+		$table->addIndex( [ 'property_id' ], $this->tableNames->prefix( 'wbt_property_terms_property_id' ) );
+		$table->addIndex( [ 'term_in_lang_id' ], $this->tableNames->prefix( 'wbt_property_terms_term_in_lang_id' ) );
 
 		return $table;
 	}
@@ -62,8 +62,8 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'text_in_lang_id', Type::INTEGER, [ 'unsigned' => true ] );
 
 		$table->setPrimaryKey( [ 'id' ] );
-		$table->addIndex( [ 'type_id' ], 'wbt_term_in_lang_type_id' );
-		$table->addIndex( [ 'text_in_lang_id' ], 'wbt_term_in_lang_text_in_lang_id' );
+		$table->addIndex( [ 'type_id' ], $this->tableNames->prefix( 'wbt_term_in_lang_type_id' ) );
+		$table->addIndex( [ 'text_in_lang_id' ], $this->tableNames->prefix( 'wbt_term_in_lang_text_in_lang_id' ) );
 
 		return $table;
 	}
@@ -76,8 +76,8 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'text_id', Type::INTEGER, [ 'unsigned' => true ] );
 
 		$table->setPrimaryKey( [ 'id' ] );
-		$table->addIndex( [ 'language' ], 'wbt_text_in_lang_language' );
-		$table->addIndex( [ 'text_id' ], 'wbt_text_in_lang_text_id' );
+		$table->addIndex( [ 'language' ], $this->tableNames->prefix( 'wbt_text_in_lang_language' ) );
+		$table->addIndex( [ 'text_id' ], $this->tableNames->prefix( 'wbt_text_in_lang_text_id' ) );
 
 		return $table;
 	}
@@ -89,7 +89,7 @@ class DoctrineSchemaCreator {
 		$table->addColumn( 'text', Type::BINARY, [ 'length' => 255 ] );
 
 		$table->setPrimaryKey( [ 'id' ] );
-		$table->addUniqueIndex( [ 'text' ], 'wbt_text_text' );
+		$table->addUniqueIndex( [ 'text' ], $this->tableNames->prefix( 'wbt_text_text' ) );
 
 		return $table;
 	}

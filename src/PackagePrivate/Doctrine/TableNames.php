@@ -38,4 +38,8 @@ class TableNames {
 		return $this->tableNamePrefix . self::TEXT;
 	}
 
+	public function prefix( $string ) {
+		return $this->tableNamePrefix . $string;
+	}
+
 }

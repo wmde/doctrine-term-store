@@ -86,14 +86,14 @@ class DoctrineStoreFactoryTest extends TestCase {
 
 		$this->assertSame(
 			[ 'item_id' ],
-			$table->getIndex( 'wbt_item_terms_item_id' )->getColumns(),
-			'wbt_item_terms_item_id index should exist'
+			$table->getIndex( 'prefix_wbt_item_terms_item_id' )->getColumns(),
+			'prefix_wbt_item_terms_item_id index should exist'
 		);
 
 		$this->assertSame(
 			[ 'term_in_lang_id' ],
-			$table->getIndex( 'wbt_item_terms_term_in_lang_id' )->getColumns(),
-			'wbt_item_terms_term_in_lang_id index should exist'
+			$table->getIndex( 'prefix_wbt_item_terms_term_in_lang_id' )->getColumns(),
+			'prefix_wbt_item_terms_term_in_lang_id index should exist'
 		);
 	}
 
@@ -113,6 +113,14 @@ class DoctrineStoreFactoryTest extends TestCase {
 			$this->connection->getSchemaManager()->tablesExist( $tableName ),
 			'Table "' . $tableName . '" should NOT exist'
 		);
+	}
+
+	public function testCanInstallMultipleStoresInOneDatabaseUsingDifferentPrefixes() {
+		( new DoctrineStoreFactory( $this->connection, 'one_' ) )->install();
+		( new DoctrineStoreFactory( $this->connection, 'two_' ) )->install();
+
+		$this->assertTableExists( ( new TableNames( 'one_' ) )->itemTerms() );
+		$this->assertTableExists( ( new TableNames( 'two_' ) )->itemTerms() );
 	}
 
 }
