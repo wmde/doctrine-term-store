@@ -54,4 +54,23 @@ class TableNamesTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @dataProvider invalidPrefixProvider
+	 */
+	public function testOnlyAlphaNumericPrefixesAreAllowed( string $prefix ) {
+		$this->expectException( \InvalidArgumentException::class );
+		new TableNames( $prefix );
+	}
+
+	public function invalidPrefixProvider() {
+		yield [ '-' ];
+		yield [ ' ' ];
+		yield [ 'abc!' ];
+		yield [ 'abc!abc' ];
+		yield [ '%&$' ];
+		yield [ '"' ];
+		yield [ "'" ];
+		yield [ '\\' ];
+	}
+
 }

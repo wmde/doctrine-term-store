@@ -15,7 +15,15 @@ class TableNames {
 	private $tableNamePrefix;
 
 	public function __construct( $tableNamePrefix ) {
+		if ( !$this->prefixIsSafe( $tableNamePrefix ) ) {
+			throw new \InvalidArgumentException( 'Table name prefix contains forbidden characters' );
+		}
 		$this->tableNamePrefix = $tableNamePrefix;
+	}
+
+	private function prefixIsSafe( $prefix ) {
+		$withoutUnderscores = str_replace( '_', '', $prefix );
+		return $withoutUnderscores === '' || ctype_alnum( $withoutUnderscores );
 	}
 
 	public function itemTerms() {
