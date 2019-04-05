@@ -62,8 +62,8 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 		$this->connection->insert(
 			$this->tableNames->propertyTerms(),
 			[
-				'property_id' => $propertyId->getNumericId(),
-				'term_in_lang_id' => $this->acquireTermInLanguageId( $term, $termType ),
+				'wbpt_property_id' => $propertyId->getNumericId(),
+				'wbpt_term_in_lang_id' => $this->acquireTermInLanguageId( $term, $termType ),
 			]
 		);
 	}
@@ -84,20 +84,20 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTermInLanguageId( $termType, $textInLanguageId ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM ' . $this->tableNames->termInLanguage() . ' WHERE type_id = ? AND text_in_lang_id = ?',
+			'SELECT wbtl_id FROM ' . $this->tableNames->termInLanguage() . ' WHERE wbtl_type_id = ? AND wbtl_text_in_lang_id = ?',
 			[ $termType, $textInLanguageId ],
 			[ \PDO::PARAM_INT, \PDO::PARAM_INT ]
 		)->fetch();
 
-		return is_array( $record ) ? $record['id'] : false;
+		return is_array( $record ) ? $record['wbtl_id'] : false;
 	}
 
 	private function insertTermInLanguageRecord( $termType, $textInLanguageId ) {
 		$this->connection->insert(
 			$this->tableNames->termInLanguage(),
 			[
-				'type_id' => $termType,
-				'text_in_lang_id ' => $textInLanguageId,
+				'wbtl_type_id' => $termType,
+				'wbtl_text_in_lang_id ' => $textInLanguageId,
 			]
 		);
 	}
@@ -118,20 +118,20 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTextInLanguageId( Term $term, $textId ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM ' . $this->tableNames->textInLanguage() . ' WHERE language = ? AND text_id = ?',
+			'SELECT wbxl_id FROM ' . $this->tableNames->textInLanguage() . ' WHERE wbxl_language = ? AND wbxl_text_id = ?',
 			[ $term->getLanguageCode(), $textId ],
 			[ \PDO::PARAM_STR, \PDO::PARAM_INT ]
 		)->fetch();
 
-		return is_array( $record ) ? $record['id'] : false;
+		return is_array( $record ) ? $record['wbxl_id'] : false;
 	}
 
 	private function insertTextInLanguageRecord( Term $term, $textId ) {
 		$this->connection->insert(
 			$this->tableNames->textInLanguage(),
 			[
-				'language' => $term->getLanguageCode(),
-				'text_id' => $textId,
+				'wbxl_language' => $term->getLanguageCode(),
+				'wbxl_text_id' => $textId,
 			]
 		);
 	}
@@ -150,19 +150,19 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function findExistingTextId( Term $term ) {
 		$record = $this->connection->executeQuery(
-			'SELECT id FROM ' . $this->tableNames->text() . ' WHERE text = ?',
+			'SELECT wbx_id FROM ' . $this->tableNames->text() . ' WHERE wbx_text = ?',
 			[ $term->getText() ],
 			[ \PDO::PARAM_STR ]
 		)->fetch();
 
-		return is_array( $record ) ? $record['id'] : false;
+		return is_array( $record ) ? $record['wbx_id'] : false;
 	}
 
 	private function insertTextRecord( Term $term ) {
 		$this->connection->insert(
 			$this->tableNames->text(),
 			[
-				'text' => $term->getText(),
+				'wbx_text' => $term->getText(),
 			]
 		);
 	}
@@ -171,7 +171,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 		try {
 			$this->connection->delete(
 				$this->tableNames->propertyTerms(),
-				[ 'property_id' => $propertyId->getNumericId() ],
+				[ 'wbpt_property_id' => $propertyId->getNumericId() ],
 				[ \PDO::PARAM_INT ]
 			);
 		}
@@ -193,11 +193,11 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function newGetTermsStatement( PropertyId $propertyId ): Statement {
 		$sql = <<<EOT
-SELECT text, language, type_id FROM {$this->tableNames->propertyTerms()}
-INNER JOIN {$this->tableNames->termInLanguage()} ON {$this->tableNames->propertyTerms()}.term_in_lang_id = {$this->tableNames->termInLanguage()}.id
-INNER JOIN {$this->tableNames->textInLanguage()} ON {$this->tableNames->termInLanguage()}.text_in_lang_id = {$this->tableNames->textInLanguage()}.id
-INNER JOIN {$this->tableNames->text()} ON {$this->tableNames->textInLanguage()}.text_id = {$this->tableNames->text()}.id
-WHERE property_id = ?
+SELECT wbx_text, wbxl_language, wbtl_type_id FROM {$this->tableNames->propertyTerms()}
+INNER JOIN {$this->tableNames->termInLanguage()} ON {$this->tableNames->propertyTerms()}.wbpt_term_in_lang_id = {$this->tableNames->termInLanguage()}.wbtl_id
+INNER JOIN {$this->tableNames->textInLanguage()} ON {$this->tableNames->termInLanguage()}.wbtl_text_in_lang_id = {$this->tableNames->textInLanguage()}.wbxl_id
+INNER JOIN {$this->tableNames->text()} ON {$this->tableNames->textInLanguage()}.wbxl_text_id = {$this->tableNames->text()}.wbx_id
+WHERE wbpt_property_id = ?
 EOT;
 
 		return $this->connection->executeQuery(
@@ -217,19 +217,19 @@ EOT;
 		$aliasGroups = [];
 
 		foreach ( $termRecords as $term ) {
-			switch ( $term->type_id ) {
+			switch ( $term->wbtl_type_id ) {
 				case self::TYPE_LABEL:
-					$fingerprint->setLabel( $term->language, $term->text );
+					$fingerprint->setLabel( $term->wbxl_language, $term->wbx_text );
 					break;
 				case self::TYPE_DESCRIPTION:
-					$fingerprint->setDescription( $term->language, $term->text );
+					$fingerprint->setDescription( $term->wbxl_language, $term->wbx_text );
 					break;
 				case self::TYPE_ALIAS:
-					if ( !array_key_exists( $term->language, $aliasGroups ) ) {
-						$aliasGroups[$term->language] = [];
+					if ( !array_key_exists( $term->wbxl_language, $aliasGroups ) ) {
+						$aliasGroups[$term->wbxl_language] = [];
 					}
 
-					$aliasGroups[$term->language][] = $term->text;
+					$aliasGroups[$term->wbxl_language][] = $term->wbx_text;
 
 					break;
 			}

@@ -64,10 +64,10 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$columns = $this->connection->getSchemaManager()->listTableColumns( $this->tableNames->itemTerms() );
 
-		$this->assertTrue( $columns['id']->getAutoincrement(), 'id column should have auto increment' );
-		$this->assertTrue( $columns['id']->getNotnull(), 'id column should not be nullable' );
+		$this->assertTrue( $columns['wbit_id']->getAutoincrement(), 'id column should have auto increment' );
+		$this->assertTrue( $columns['wbit_id']->getNotnull(), 'id column should not be nullable' );
 		$this->assertContains(
-			$columns['id']->getType()->getName(),
+			$columns['wbit_id']->getType()->getName(),
 			[ Type::BIGINT, Type::INTEGER ],
 			'id column should have BIGINT or INTEGER type'
 		);
@@ -79,19 +79,19 @@ class DoctrineTermStoreTest extends TestCase {
 		$table = $this->connection->getSchemaManager()->listTableDetails( $this->tableNames->itemTerms() );
 
 		$this->assertSame(
-			[ 'id' ],
+			[ 'wbit_id' ],
 			$table->getPrimaryKey()->getColumns(),
 			'primary key should be on id column'
 		);
 
 		$this->assertSame(
-			[ 'item_id' ],
+			[ 'wbit_item_id' ],
 			$table->getIndex( 'prefix_wbt_item_terms_item_id' )->getColumns(),
 			'prefix_wbt_item_terms_item_id index should exist'
 		);
 
 		$this->assertSame(
-			[ 'term_in_lang_id' ],
+			[ 'wbit_term_in_lang_id' ],
 			$table->getIndex( 'prefix_wbt_item_terms_term_in_lang_id' )->getColumns(),
 			'prefix_wbt_item_terms_term_in_lang_id index should exist'
 		);
