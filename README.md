@@ -1,6 +1,8 @@
 # Wikibase TermStore
 
 [![Build Status](https://travis-ci.org/wmde/wikibase-term-store.svg?branch=master)](https://travis-ci.org/wmde/wikibase-term-store)
+[![Latest Stable Version](https://poser.pugx.org/wikibase/term-store/version.png)](https://packagist.org/packages/wikibase/term-store)
+[![Download count](https://poser.pugx.org/wikibase/term-store/d/total.png)](https://packagist.org/packages/wikibase/term-store)
 
 Small library for looking up terms by item or property id or finding ids by term.
 
