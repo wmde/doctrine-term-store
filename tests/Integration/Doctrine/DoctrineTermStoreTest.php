@@ -39,7 +39,7 @@ class DoctrineTermStoreTest extends TestCase {
 	}
 
 	public function testInstallCreatesTables() {
-		$this->newStoreFactory()->install();
+		$this->newTermStore()->install();
 
 		$this->assertTableExists( $this->tableNames->itemTerms() );
 		$this->assertTableExists( $this->tableNames->propertyTerms() );
@@ -48,7 +48,7 @@ class DoctrineTermStoreTest extends TestCase {
 		$this->assertTableExists( $this->tableNames->text() );
 	}
 
-	private function newStoreFactory(): DoctrineTermStore {
+	private function newTermStore(): DoctrineTermStore {
 		return new DoctrineTermStore( $this->connection, self::PREFIX );
 	}
 
@@ -60,7 +60,7 @@ class DoctrineTermStoreTest extends TestCase {
 	}
 
 	public function testInstallCreatesItemTermsColumns() {
-		$this->newStoreFactory()->install();
+		$this->newTermStore()->install();
 
 		$columns = $this->connection->getSchemaManager()->listTableColumns( $this->tableNames->itemTerms() );
 
@@ -74,7 +74,7 @@ class DoctrineTermStoreTest extends TestCase {
 	}
 
 	public function testInstallCreatesItemTermsIndexes() {
-		$this->newStoreFactory()->install();
+		$this->newTermStore()->install();
 
 		$table = $this->connection->getSchemaManager()->listTableDetails( $this->tableNames->itemTerms() );
 
@@ -98,8 +98,8 @@ class DoctrineTermStoreTest extends TestCase {
 	}
 
 	public function testUninstallDropsTables() {
-		$this->newStoreFactory()->install();
-		$this->newStoreFactory()->uninstall();
+		$this->newTermStore()->install();
+		$this->newTermStore()->uninstall();
 
 		$this->assertTableDoesNotExist( $this->tableNames->itemTerms() );
 		$this->assertTableDoesNotExist( $this->tableNames->propertyTerms() );
@@ -121,6 +121,15 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$this->assertTableExists( ( new TableNames( 'one_' ) )->itemTerms() );
 		$this->assertTableExists( ( new TableNames( 'two_' ) )->itemTerms() );
+	}
+
+	public function testCanInstallMultipleTimes() {
+		$store = $this->newTermStore();
+
+		$store->install();
+		$store->install();
+
+		$this->assertTableExists( $this->tableNames->itemTerms() );
 	}
 
 }

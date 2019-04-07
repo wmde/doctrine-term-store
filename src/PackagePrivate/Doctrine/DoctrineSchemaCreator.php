@@ -19,11 +19,13 @@ class DoctrineSchemaCreator {
 	}
 
 	public function createSchema() {
-		$this->schemaManager->createTable( $this->newItemTermsTable() );
-		$this->schemaManager->createTable( $this->newPropertyTermsTable() );
-		$this->schemaManager->createTable( $this->newTermInLangTable() );
-		$this->schemaManager->createTable( $this->newTextInLangTable() );
-		$this->schemaManager->createTable( $this->newTextTable() );
+		if ( !$this->schemaManager->tablesExist( $this->tableNames->itemTerms() ) ) {
+			$this->schemaManager->createTable( $this->newItemTermsTable() );
+			$this->schemaManager->createTable( $this->newPropertyTermsTable() );
+			$this->schemaManager->createTable( $this->newTermInLangTable() );
+			$this->schemaManager->createTable( $this->newTextInLangTable() );
+			$this->schemaManager->createTable( $this->newTextTable() );
+		}
 	}
 
 	private function newItemTermsTable(): Table {
