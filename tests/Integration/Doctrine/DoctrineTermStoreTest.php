@@ -163,4 +163,21 @@ class DoctrineTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testUninstallReportsProgress() {
+		$messageReporter = new SpyMessageReporter();
+
+		$store = $this->newTermStore();
+
+		$store->install();
+		$store->uninstall( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Uninstalling Wikibase Term Store: removing tables... ',
+				"done\n"
+			],
+			$messageReporter->getMessages()
+		);
+	}
+
 }
