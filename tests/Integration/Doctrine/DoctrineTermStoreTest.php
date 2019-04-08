@@ -7,6 +7,7 @@ namespace Wikibase\TermStore\Tests\Integration\Doctrine;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
+use Onoi\MessageReporter\SpyMessageReporter;
 use PHPUnit\Framework\TestCase;
 use Wikibase\TermStore\DoctrineTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
@@ -130,6 +131,36 @@ class DoctrineTermStoreTest extends TestCase {
 		$store->install();
 
 		$this->assertTableExists( $this->tableNames->itemTerms() );
+	}
+
+	public function testFreshInstallationReportsProgress() {
+		$messageReporter = new SpyMessageReporter();
+
+		$this->newTermStore()->install( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Installing Wikibase Term Store... ',
+				"done\n"
+			],
+			$messageReporter->getMessages()
+		);
+	}
+
+	public function testNullInstallationReportsAlreadyInstalled() {
+		$messageReporter = new SpyMessageReporter();
+
+		$store = $this->newTermStore();
+
+		$store->install();
+		$store->install( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Wikibase Term Store is already installed'
+			],
+			$messageReporter->getMessages()
+		);
 	}
 
 }
