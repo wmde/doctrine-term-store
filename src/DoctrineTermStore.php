@@ -35,13 +35,25 @@ class DoctrineTermStore implements TermStore {
 	/**
 	 * CAUTION! This drops all tables part of the term store!
 	 */
-	public function uninstall() {
+	public function uninstall( MessageReporter $reporter = null ) {
+		if ( $reporter === null ) {
+			$reporter = new NullMessageReporter();
+		}
+
 		$schema = $this->connection->getSchemaManager();
-		$schema->dropTable( $this->tableNames->itemTerms() );
-		$schema->dropTable( $this->tableNames->propertyTerms() );
-		$schema->dropTable( $this->tableNames->termInLanguage() );
-		$schema->dropTable( $this->tableNames->textInLanguage() );
-		$schema->dropTable( $this->tableNames->text() );
+
+		if ( $schema->tablesExist( $this->tableNames->itemTerms() ) ) {
+			$reporter->reportMessage( 'Uninstalling Wikibase Term Store: removing tables' );
+
+			$schema->dropTable( $this->tableNames->itemTerms() );
+			$schema->dropTable( $this->tableNames->propertyTerms() );
+			$schema->dropTable( $this->tableNames->termInLanguage() );
+			$schema->dropTable( $this->tableNames->textInLanguage() );
+			$schema->dropTable( $this->tableNames->text() );
+		}
+		else {
+			$reporter->reportMessage( 'Wikibase Term Store is not installed so will not be removed' );
+		}
 	}
 
 	public function newPropertyTermStore(): PropertyTermStore {

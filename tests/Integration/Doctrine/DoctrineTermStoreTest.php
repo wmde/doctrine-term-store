@@ -138,11 +138,13 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$this->newTermStore()->install( $messageReporter );
 
-		$this->assertSame(
-			[
-				'Installing Wikibase Term Store... ',
-				"done\n"
-			],
+		$this->assertContains(
+			'Installing Wikibase Term Store',
+			$messageReporter->getMessages()
+		);
+
+		$this->assertContains(
+			'Finished installing Wikibase Term Store',
 			$messageReporter->getMessages()
 		);
 	}
@@ -158,6 +160,35 @@ class DoctrineTermStoreTest extends TestCase {
 		$this->assertSame(
 			[
 				'Wikibase Term Store is already installed'
+			],
+			$messageReporter->getMessages()
+		);
+	}
+
+	public function testUninstallReportsProgress() {
+		$messageReporter = new SpyMessageReporter();
+
+		$store = $this->newTermStore();
+
+		$store->install();
+		$store->uninstall( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Uninstalling Wikibase Term Store: removing tables'
+			],
+			$messageReporter->getMessages()
+		);
+	}
+
+	public function testUninstallReportsNothingToDoWhenNotInstalled() {
+		$messageReporter = new SpyMessageReporter();
+
+		$this->newTermStore()->uninstall( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Wikibase Term Store is not installed so will not be removed'
 			],
 			$messageReporter->getMessages()
 		);

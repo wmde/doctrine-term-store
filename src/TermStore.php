@@ -13,7 +13,7 @@ interface TermStore {
 	/**
 	 * CAUTION! This removes all data!
 	 */
-	public function uninstall();
+	public function uninstall( MessageReporter $reporter = null );
 
 	public function newPropertyTermStore(): PropertyTermStore;
 
