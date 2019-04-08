@@ -180,4 +180,17 @@ class DoctrineTermStoreTest extends TestCase {
 		);
 	}
 
+	public function testUninstallReportsNothingToDoWhenNotInstalled() {
+		$messageReporter = new SpyMessageReporter();
+
+		$this->newTermStore()->uninstall( $messageReporter );
+
+		$this->assertSame(
+			[
+				'Wikibase Term Store is not installed so will not be removed'
+			],
+			$messageReporter->getMessages()
+		);
+	}
+
 }
