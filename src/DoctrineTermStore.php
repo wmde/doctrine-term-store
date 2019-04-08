@@ -5,6 +5,8 @@ declare( strict_types = 1 );
 namespace Wikibase\TermStore;
 
 use Doctrine\DBAL\Connection;
+use Onoi\MessageReporter\MessageReporter;
+use Onoi\MessageReporter\NullMessageReporter;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrinePropertyTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineSchemaCreator;
 use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
@@ -22,10 +24,11 @@ class DoctrineTermStore implements TermStore {
 		$this->tableNames = new TableNames( $tableNamePrefix );
 	}
 
-	public function install() {
+	public function install( MessageReporter $reporter = null ) {
 		( new DoctrineSchemaCreator(
 			$this->connection->getSchemaManager(),
-			$this->tableNames
+			$this->tableNames,
+			$reporter === null ? new NullMessageReporter() : $reporter
 		) )->createSchema();
 	}
 

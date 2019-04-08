@@ -7,23 +7,35 @@ namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
+use Onoi\MessageReporter\MessageReporter;
 
 class DoctrineSchemaCreator {
 
 	private $schemaManager;
 	private $tableNames;
+	private $reporter;
 
-	public function __construct( AbstractSchemaManager $schemaManager, TableNames $tableNames ) {
+	public function __construct( AbstractSchemaManager $schemaManager, TableNames $tableNames, MessageReporter $reporter ) {
 		$this->schemaManager = $schemaManager;
 		$this->tableNames = $tableNames;
+		$this->reporter = $reporter;
 	}
 
 	public function createSchema() {
-		$this->schemaManager->createTable( $this->newItemTermsTable() );
-		$this->schemaManager->createTable( $this->newPropertyTermsTable() );
-		$this->schemaManager->createTable( $this->newTermInLangTable() );
-		$this->schemaManager->createTable( $this->newTextInLangTable() );
-		$this->schemaManager->createTable( $this->newTextTable() );
+		if ( $this->schemaManager->tablesExist( $this->tableNames->itemTerms() ) ) {
+			$this->reporter->reportMessage( 'Wikibase Term Store is already installed' );
+		}
+		else {
+			$this->reporter->reportMessage( 'Installing Wikibase Term Store... ' );
+
+			$this->schemaManager->createTable( $this->newItemTermsTable() );
+			$this->schemaManager->createTable( $this->newPropertyTermsTable() );
+			$this->schemaManager->createTable( $this->newTermInLangTable() );
+			$this->schemaManager->createTable( $this->newTextInLangTable() );
+			$this->schemaManager->createTable( $this->newTextTable() );
+
+			$this->reporter->reportMessage( "done\n" );
+		}
 	}
 
 	private function newItemTermsTable(): Table {
