@@ -140,8 +140,8 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$this->assertSame(
 			[
-				'Installing Wikibase Term Store... ',
-				"done\n"
+				'Installing Wikibase Term Store',
+				'Finished creating Term Store tables'
 			],
 			$messageReporter->getMessages()
 		);
@@ -173,8 +173,7 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$this->assertSame(
 			[
-				'Uninstalling Wikibase Term Store: removing tables... ',
-				"done\n"
+				'Uninstalling Wikibase Term Store: removing tables'
 			],
 			$messageReporter->getMessages()
 		);

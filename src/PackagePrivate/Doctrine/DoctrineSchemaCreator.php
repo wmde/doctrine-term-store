@@ -26,7 +26,7 @@ class DoctrineSchemaCreator {
 			$this->reporter->reportMessage( 'Wikibase Term Store is already installed' );
 		}
 		else {
-			$this->reporter->reportMessage( 'Installing Wikibase Term Store... ' );
+			$this->reporter->reportMessage( 'Installing Wikibase Term Store' );
 
 			$this->schemaManager->createTable( $this->newItemTermsTable() );
 			$this->schemaManager->createTable( $this->newPropertyTermsTable() );
@@ -34,7 +34,7 @@ class DoctrineSchemaCreator {
 			$this->schemaManager->createTable( $this->newTextInLangTable() );
 			$this->schemaManager->createTable( $this->newTextTable() );
 
-			$this->reporter->reportMessage( "done\n" );
+			$this->reporter->reportMessage( 'Finished creating Term Store tables' );
 		}
 	}
 
