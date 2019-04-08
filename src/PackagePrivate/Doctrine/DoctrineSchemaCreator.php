@@ -28,13 +28,22 @@ class DoctrineSchemaCreator {
 		else {
 			$this->reporter->reportMessage( 'Installing Wikibase Term Store' );
 
+			$this->reporter->reportMessage( 'Creating table ' . $this->tableNames->itemTerms() );
 			$this->schemaManager->createTable( $this->newItemTermsTable() );
+
+			$this->reporter->reportMessage( 'Creating table ' . $this->tableNames->propertyTerms() );
 			$this->schemaManager->createTable( $this->newPropertyTermsTable() );
+
+			$this->reporter->reportMessage( 'Creating table ' . $this->tableNames->termInLanguage() );
 			$this->schemaManager->createTable( $this->newTermInLangTable() );
+
+			$this->reporter->reportMessage( 'Creating table ' . $this->tableNames->textInLanguage() );
 			$this->schemaManager->createTable( $this->newTextInLangTable() );
+
+			$this->reporter->reportMessage( 'Creating table ' . $this->tableNames->text() );
 			$this->schemaManager->createTable( $this->newTextTable() );
 
-			$this->reporter->reportMessage( 'Finished creating Term Store tables' );
+			$this->reporter->reportMessage( 'Finished installing Wikibase Term Store' );
 		}
 	}
 

@@ -138,11 +138,13 @@ class DoctrineTermStoreTest extends TestCase {
 
 		$this->newTermStore()->install( $messageReporter );
 
-		$this->assertSame(
-			[
-				'Installing Wikibase Term Store',
-				'Finished creating Term Store tables'
-			],
+		$this->assertContains(
+			'Installing Wikibase Term Store',
+			$messageReporter->getMessages()
+		);
+
+		$this->assertContains(
+			'Finished installing Wikibase Term Store',
 			$messageReporter->getMessages()
 		);
 	}
