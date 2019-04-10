@@ -5,6 +5,7 @@ namespace Wikibase\TermStore;
 use Doctrine\DBAL\Connection;
 use Onoi\MessageReporter\MessageReporter;
 use Onoi\MessageReporter\NullMessageReporter;
+use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineItemTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrinePropertyTermStore;
 use Wikibase\TermStore\PackagePrivate\Doctrine\DoctrineSchemaCreator;
 use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
@@ -58,8 +59,8 @@ class DoctrineTermStore implements TermStoreFactory {
 		return new DoctrinePropertyTermStore( $this->connection, $this->tableNames );
 	}
 
-	public function newItemTermStore(): ItemTermStore {
-		throw new \Exception( 'not implemented' );
-	}
+    public function newItemTermStore(): ItemTermStore {
+        return new DoctrineItemTermStore( $this->connection, $this->tableNames );
+    }
 
 }
