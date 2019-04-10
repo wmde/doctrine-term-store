@@ -1,10 +1,11 @@
-# Wikibase TermStore
+# Wikibase Doctrine TermStore
 
-[![Build Status](https://travis-ci.org/wmde/wikibase-term-store.svg?branch=master)](https://travis-ci.org/wmde/wikibase-term-store)
-[![Latest Stable Version](https://poser.pugx.org/wikibase/term-store/version.png)](https://packagist.org/packages/wikibase/term-store)
-[![Download count](https://poser.pugx.org/wikibase/term-store/d/total.png)](https://packagist.org/packages/wikibase/term-store)
+[![Build Status](https://travis-ci.org/wmde/doctrine-term-store.svg?branch=master)](https://travis-ci.org/wmde/doctrine-term-store)
+[![Latest Stable Version](https://poser.pugx.org/wikibase/doctrine-term-store/version.png)](https://packagist.org/packages/wikibase/doctrine-term-store)
+[![Download count](https://poser.pugx.org/wikibase/doctrine-term-store/d/total.png)](https://packagist.org/packages/wikibase/doctrine-term-store)
 
-Small library for looking up terms by item or property id or finding ids by term.
+[Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) implementation of
+[Wikibase TermStore](https://github.com/wmde/wikibase-term-store). 
 
 ## Usage
 
@@ -28,14 +29,14 @@ $termStore->install();
 
 ## Installation
 
-To use the Wikibase TermStore library in your project, simply add a dependency on wikibase/term-store
+To use the Wikibase TermStore library in your project, simply add a dependency on wikibase/doctrine-term-store
 to your project's `composer.json` file. Here is a minimal example of a `composer.json`
-file that just defines a dependency on wikibase/term-store 1.x:
+file that just defines a dependency on wikibase/doctrine-term-store 1.x:
 
 ```json
 {
     "require": {
-        "wikibase/term-store": "~1.0"
+        "wikibase/doctrine-term-store": "~1.0"
     }
 }
 ```
