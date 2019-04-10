@@ -59,8 +59,8 @@ class DoctrineTermStore implements TermStoreFactory {
 		return new DoctrinePropertyTermStore( $this->connection, $this->tableNames );
 	}
 
-    public function newItemTermStore(): ItemTermStore {
-        return new DoctrineItemTermStore( $this->connection, $this->tableNames );
-    }
+	public function newItemTermStore(): ItemTermStore {
+		return new DoctrineItemTermStore( $this->connection, $this->tableNames );
+	}
 
 }
