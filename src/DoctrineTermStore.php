@@ -12,7 +12,7 @@ use Wikibase\TermStore\PackagePrivate\Doctrine\TableNames;
 /**
  * Doctrine implementation of the Abstract Factory TermStoreFactory
  */
-class DoctrineTermStore implements TermStore {
+class DoctrineTermStore implements TermStoreFactory {
 
 	private $connection;
 	private $tableNames;
@@ -57,5 +57,9 @@ class DoctrineTermStore implements TermStore {
 	public function newPropertyTermStore(): PropertyTermStore {
 		return new DoctrinePropertyTermStore( $this->connection, $this->tableNames );
 	}
+
+    public function newItemTermStore(): ItemTermStore {
+        throw new \Exception( 'not implemented' );
+    }
 
 }
