@@ -1,7 +1,5 @@
 <?php
 
-declare( strict_types = 1 );
-
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;

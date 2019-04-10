@@ -1,7 +1,5 @@
 <?php
 
-declare( strict_types = 1 );
-
 namespace Wikibase\TermStore\Tests\Integration\Doctrine;
 
 use Doctrine\DBAL\Connection;
