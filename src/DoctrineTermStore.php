@@ -58,8 +58,8 @@ class DoctrineTermStore implements TermStoreFactory {
 		return new DoctrinePropertyTermStore( $this->connection, $this->tableNames );
 	}
 
-    public function newItemTermStore(): ItemTermStore {
-        throw new \Exception( 'not implemented' );
-    }
+	public function newItemTermStore(): ItemTermStore {
+		throw new \Exception( 'not implemented' );
+	}
 
 }
