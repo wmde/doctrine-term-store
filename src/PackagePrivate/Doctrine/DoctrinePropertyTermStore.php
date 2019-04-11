@@ -78,8 +78,8 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	public function getTerms( PropertyId $propertyId ): Fingerprint {
 		try {
-			return $this->normalizedStore->recordsToFingerprint(
-				$this->newGetTermsStatement( $propertyId )->fetchAll( \PDO::FETCH_OBJ )
+			return $this->normalizedStore->getFingerprint(
+				$this->newGetTermsStatement( $propertyId )
 			);
 		}
 		catch ( DBALException $ex ) {

@@ -78,8 +78,8 @@ class DoctrineItemTermStore implements ItemTermStore {
 
 	public function getTerms( ItemId $itemId ): Fingerprint {
 		try {
-			return $this->normalizedStore->recordsToFingerprint(
-				$this->newGetTermsStatement( $itemId )->fetchAll( \PDO::FETCH_OBJ )
+			return $this->normalizedStore->getFingerprint(
+				$this->newGetTermsStatement( $itemId )
 			);
 		}
 		catch ( DBALException $ex ) {

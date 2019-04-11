@@ -3,8 +3,11 @@
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Statement;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
+use Wikibase\TermStore\TermStoreException;
 
 class NormalizedStore {
 
@@ -119,7 +122,13 @@ class NormalizedStore {
 		);
 	}
 
-	public function recordsToFingerprint( array $termRecords ): Fingerprint {
+	public function getFingerprint( Statement $statement ): Fingerprint {
+		return $this->recordsToFingerprint(
+			$statement->fetchAll( \PDO::FETCH_OBJ )
+		);
+	}
+
+	private function recordsToFingerprint( array $termRecords ): Fingerprint {
 		$fingerprint = new Fingerprint();
 
 		$aliasGroups = [];
