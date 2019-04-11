@@ -3,7 +3,7 @@
 	"license": "BSD-3-Clause",
 	"description": "Small library for persistence of Wikibase terms via Doctrine DBAL",
 	"require": {
-		"php": "^7.0",
+		"php": "^5.6.99|^7.0",
 		"wikibase/term-store": "~1.0",
 		"doctrine/dbal": "~2.5",
 		"onoi/message-reporter": "~1.3"
