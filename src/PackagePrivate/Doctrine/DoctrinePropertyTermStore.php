@@ -35,11 +35,11 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	private function insertTerms( PropertyId $propertyId, Fingerprint $terms ) {
 		foreach ( $terms->getLabels() as $term ) {
-			$this->insertTerm( $propertyId, $term, NormalizedStore::TYPE_LABEL );
+			$this->insertTerm( $propertyId, $term, TermType::LABEL );
 		}
 
 		foreach ( $terms->getDescriptions() as $term ) {
-			$this->insertTerm( $propertyId, $term, NormalizedStore::TYPE_DESCRIPTION );
+			$this->insertTerm( $propertyId, $term, TermType::DESCRIPTION );
 		}
 
 		foreach ( $terms->getAliasGroups() as $aliasGroup ) {
@@ -47,7 +47,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 				$this->insertTerm(
 					$propertyId,
 					new Term( $aliasGroup->getLanguageCode(), $alias ),
-					NormalizedStore::TYPE_ALIAS
+					TermType::ALIAS
 				);
 			}
 		}

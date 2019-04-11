@@ -35,11 +35,11 @@ class DoctrineItemTermStore implements ItemTermStore {
 
 	private function insertTerms( ItemId $itemId, Fingerprint $terms ) {
 		foreach ( $terms->getLabels() as $term ) {
-			$this->insertTerm( $itemId, $term, NormalizedStore::TYPE_LABEL );
+			$this->insertTerm( $itemId, $term, TermType::LABEL );
 		}
 
 		foreach ( $terms->getDescriptions() as $term ) {
-			$this->insertTerm( $itemId, $term, NormalizedStore::TYPE_DESCRIPTION );
+			$this->insertTerm( $itemId, $term, TermType::DESCRIPTION );
 		}
 
 		foreach ( $terms->getAliasGroups() as $aliasGroup ) {
@@ -47,7 +47,7 @@ class DoctrineItemTermStore implements ItemTermStore {
 				$this->insertTerm(
 					$itemId,
 					new Term( $aliasGroup->getLanguageCode(), $alias ),
-					NormalizedStore::TYPE_ALIAS
+					TermType::ALIAS
 				);
 			}
 		}

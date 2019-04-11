@@ -3,17 +3,11 @@
 namespace Wikibase\TermStore\PackagePrivate\Doctrine;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Statement;
 use Wikibase\DataModel\Term\Fingerprint;
 use Wikibase\DataModel\Term\Term;
-use Wikibase\TermStore\TermStoreException;
 
 class NormalizedStore {
-
-	/* public */ const TYPE_LABEL = 1;
-	/* public */ const TYPE_DESCRIPTION = 2;
-	/* public */ const TYPE_ALIAS = 3;
 
 	private $connection;
 	private $tableNames;
@@ -135,13 +129,13 @@ class NormalizedStore {
 
 		foreach ( $termRecords as $term ) {
 			switch ( $term->wbtl_type_id ) {
-				case NormalizedStore::TYPE_LABEL:
+				case TermType::LABEL:
 					$fingerprint->setLabel( $term->wbxl_language, $term->wbx_text );
 					break;
-				case NormalizedStore::TYPE_DESCRIPTION:
+				case TermType::DESCRIPTION:
 					$fingerprint->setDescription( $term->wbxl_language, $term->wbx_text );
 					break;
-				case NormalizedStore::TYPE_ALIAS:
+				case TermType::ALIAS:
 					if ( !array_key_exists( $term->wbxl_language, $aliasGroups ) ) {
 						$aliasGroups[$term->wbxl_language] = [];
 					}
