@@ -281,6 +281,4 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		$store->deleteTerms( new PropertyId( 'P1' ) );
 	}
 
-	// TODO: deletion cleanup
-
 }

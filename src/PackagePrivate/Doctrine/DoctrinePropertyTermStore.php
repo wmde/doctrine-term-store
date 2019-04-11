@@ -27,7 +27,6 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 
 	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
 		try {
-			// TODO: optimize by doing a select and a diff to see what to insert and what to delete
 			$this->deleteTerms( $propertyId );
 			$this->insertTerms( $propertyId, $terms );
 		}

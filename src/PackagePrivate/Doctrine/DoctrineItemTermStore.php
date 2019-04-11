@@ -27,7 +27,6 @@ class DoctrineItemTermStore implements ItemTermStore {
 
 	public function storeTerms( ItemId $itemId, Fingerprint $terms ) {
 		try {
-			// TODO: optimize by doing a select and a diff to see what to insert and what to delete
 			$this->deleteTerms( $itemId );
 			$this->insertTerms( $itemId, $terms );
 		}
