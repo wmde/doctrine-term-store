@@ -281,6 +281,4 @@ class DoctrineItemTermStoreTest extends TestCase {
 		$store->deleteTerms( new ItemId( 'Q1' ) );
 	}
 
-	// TODO: deletion cleanup
-
 }
