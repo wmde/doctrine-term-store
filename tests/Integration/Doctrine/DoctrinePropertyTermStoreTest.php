@@ -281,4 +281,31 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 		$store->deleteTerms( new PropertyId( 'P1' ) );
 	}
 
+	public function testDeduplicationWorksWhenOnlyTextIsTheSame() {
+		$text = '某实体所取得的纪录';
+
+		$this->store->storeTerms(
+			new PropertyId( 'P1' ),
+			new Fingerprint(
+				new TermList( [
+					new Term( 'en', $text ),
+				] )
+			)
+		);
+
+		$this->store->storeTerms(
+			new PropertyId( 'P2' ),
+			new Fingerprint(
+				new TermList(),
+				new TermList( [
+					new Term( 'de', $text ),
+				] )
+			)
+		);
+
+		$this->assertTableRowCount( 1, $this->tableNames->text() );
+		$this->assertTableRowCount( 2, $this->tableNames->textInLanguage() );
+		$this->assertTableRowCount( 2, $this->tableNames->termInLanguage() );
+	}
+
 }
