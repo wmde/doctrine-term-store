@@ -282,11 +282,13 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 	}
 
 	public function testDeduplicationWorksWhenOnlyTextIsTheSame() {
+		$text = '某实体所取得的纪录';
+
 		$this->store->storeTerms(
 			new PropertyId( 'P1' ),
 			new Fingerprint(
 				new TermList( [
-					new Term( 'en', 'HelloThere' ),
+					new Term( 'en', $text ),
 				] )
 			)
 		);
@@ -296,7 +298,7 @@ class DoctrinePropertyTermStoreTest extends TestCase {
 			new Fingerprint(
 				new TermList(),
 				new TermList( [
-					new Term( 'de', 'HelloThere' ),
+					new Term( 'de', $text ),
 				] )
 			)
 		);
