@@ -24,9 +24,14 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 	}
 
 	public function storeTerms( PropertyId $propertyId, Fingerprint $terms ) {
+		$oldTerms = $this->getTerms( $propertyId );
+
+		$termsToAdd = new Fingerprint(); // TODO: diff
+		$termsToRemove = new Fingerprint(); // TODO: diff
+
 		try {
-			$this->deleteTerms( $propertyId );
-			$this->insertTerms( $propertyId, $terms );
+			$this->insertTerms( $propertyId, $termsToAdd );
+			$this->removeTerms( $propertyId, $termsToRemove );
 		}
 		catch ( DBALException $ex ) {
 			throw new TermStoreException( $ex->getMessage(), $ex->getCode() );
@@ -53,6 +58,34 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 		}
 	}
 
+	private function removeTerms( PropertyId $propertyId, Fingerprint $terms ) {
+		$termInLangIds = [];
+
+		foreach ( $terms->getLabels() as $label ) {
+			$termInLangIds[] = 0; // TODO
+		}
+
+		foreach ( $terms->getDescriptions() as $description ) {
+			$termInLangIds[] = 0; // TODO
+		}
+
+		foreach ( $terms->getAliasGroups() as $aliasGroup ) {
+			foreach ( $aliasGroup->getAliases() as $alias ) {
+				$termInLangIds[] = 0; // TODO
+			}
+		}
+
+		$this->connection->delete(
+			$this->tableNames->propertyTerms(),
+			[
+				'wbpt_property_id' => $propertyId->getNumericId(),
+				'wbpt_term_in_lang_id' => $termInLangIds,
+			]
+		);
+
+		// TODO: cleanup
+	}
+
 	private function insertTerm( PropertyId $propertyId, Term $term, $termType ) {
 		$this->connection->insert(
 			$this->tableNames->propertyTerms(),
@@ -70,6 +103,7 @@ class DoctrinePropertyTermStore implements PropertyTermStore {
 				[ 'wbpt_property_id' => $propertyId->getNumericId() ],
 				[ \PDO::PARAM_INT ]
 			);
+			// TODO: cleanup (maybe: removeTerms(id, getTerms(id)))
 		}
 		catch ( DBALException $ex ) {
 			throw new TermStoreException( $ex->getMessage(), $ex->getCode() );
